@@ -1,0 +1,1129 @@
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.auth-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ffffff !important;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Specific style for NTN field to ensure visibility */
+.form-group input[name="ntnNumber"] {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    color: #dc3545;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f8d7da;
+    border-radius: 4px;
+}
+
+.link {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.link:hover {
+    color: #0056b3;
+}
+
+.dashboard-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.user-info {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.user-info h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.user-info p {
+    margin: 10px 0;
+    color: #555;
+}
+
+.logout-button {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.logout-button:hover {
+    background-color: #c82333;
+}
+
+/* Luxury Car Dealership Login Styles */
+.luxury-login-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('../assets/car-bg.jpg') center/cover no-repeat fixed;
+    color: #fff;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Navigation Bar */
+.main-nav {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(192, 160, 128, 0.2);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo-img {
+    width: 60px;
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(192, 160, 128, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.nav-logo-img:hover {
+    transform: scale(1.05);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.nav-link {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #c0a080, #8b7355);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #c0a080;
+    transform: translateY(-2px);
+}
+
+.nav-link:hover::before {
+    width: 100%;
+}
+
+/* Mobile Navigation */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.hamburger span {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background: #c0a080;
+    margin: 5px 0;
+    transition: all 0.3s ease;
+}
+
+/* Branding Section */
+.branding-section {
+    padding: 0.5rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.branding-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
+.logo-container {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.car-logo {
+    width: 200px;
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(192, 160, 128, 0.5));
+    transition: transform 0.3s ease;
+}
+
+.car-logo:hover {
+    transform: scale(1.05);
+}
+
+.luxury-logo {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 2px;
+    background: linear-gradient(45deg, #fff, #c0a080);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.luxury-logo::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #c0a080, transparent);
+}
+
+.luxury-tagline {
+    font-size: 1.4rem;
+    font-weight: 300;
+    margin-top: 0.5rem;
+    color: #c0a080;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Login Section */
+.login-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem; /* Reduced from 2rem */
+    margin-top: 0; /* Added to ensure no extra space */
+}
+
+/* Form Container */
+.form-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    margin-top: 0;
+}
+
+/* Form Textarea */
+.form-textarea {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    resize: vertical;
+    min-height: 120px;
+    font-family: inherit;
+}
+
+.form-textarea:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #c0a080;
+    outline: none;
+    box-shadow: 0 0 15px rgba(192, 160, 128, 0.3);
+    transform: scale(1.02);
+}
+
+.form-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Form Wrapper */
+.form-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 0;
+}
+
+/* Form Title */
+.form-title {
+    font-size: 2rem;
+    font-weight: 300;
+    color: #fff;
+    margin-bottom: 2rem;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    display: block;
+    color: #ffffff;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-textarea {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-textarea:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #c0a080;
+    outline: none;
+    box-shadow: 0 0 15px rgba(192, 160, 128, 0.3);
+    transform: scale(1.02);
+}
+
+/* Submit Button */
+.submit-button {
+    background: linear-gradient(135deg, #c0a080, #8b7355);
+    color: #fff;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.submit-button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #8b7355, #6b5a45);
+    box-shadow: 0 5px 15px rgba(192, 160, 128, 0.3);
+}
+
+.submit-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.error-message {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Form Switch Link */
+.form-switch {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+.form-switch a {
+    color: #c0a080;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+}
+
+.form-switch a:hover {
+    color: #fff;
+    text-decoration: underline;
+    text-shadow: 0 0 10px rgba(192, 160, 128, 0.5);
+}
+
+/* Footer Section */
+.login-footer {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    text-align: center;
+    backdrop-filter: blur(5px);
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.copyright {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #c0a080;
+}
+
+.link-separator {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-nav {
+        padding: 1rem;
+    }
+
+    .nav-logo-img {
+        width: 50px;
+    }
+
+    .hamburger {
+        display: block;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 80px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        gap: 2rem;
+        padding: 2rem;
+        transition: left 0.3s ease;
+    }
+
+    .nav-links.active {
+        left: 0;
+    }
+
+    .nav-link {
+        font-size: 1.2rem;
+        padding: 1rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-link::before {
+        height: 3px;
+    }
+
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+    }
+
+    .car-logo {
+        width: 150px;
+    }
+
+    .luxury-logo {
+        font-size: 2.8rem;
+    }
+    
+    .luxury-tagline {
+        font-size: 1.1rem;
+    }
+    
+    .form-wrapper {
+        padding: 2rem;
+    }
+    
+    .form-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-nav {
+        padding: 0.8rem;
+    }
+
+    .nav-logo-img {
+        width: 40px;
+    }
+
+    .nav-links {
+        top: 70px;
+        height: calc(100vh - 70px);
+    }
+
+    .nav-link {
+        font-size: 1.1rem;
+        padding: 0.8rem;
+    }
+
+    .car-logo {
+        width: 120px;
+    }
+
+    .branding-section {
+        padding: 1.5rem;
+    }
+    
+    .luxury-logo {
+        font-size: 2.2rem;
+    }
+    
+    .luxury-tagline {
+        font-size: 1rem;
+    }
+    
+    .login-section {
+        padding: 1rem;
+    }
+    
+    .form-wrapper {
+        padding: 1.5rem;
+    }
+    
+    .form-title {
+        font-size: 1.5rem;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .link-separator {
+        display: none;
+    }
+}
+
+/* Success Message */
+.success-message {
+    color: #4BB543;
+    background: rgba(75, 181, 67, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Car Ads Grid Styles */
+.car-ads-section {
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    min-height: 60vh;
+}
+
+.car-ads-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.car-ad-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.car-ad-card:hover {
+    transform: translateY(-5px);
+}
+
+.car-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.car-details {
+    padding: 1rem;
+}
+
+.car-details h3 {
+    margin: 0 0 0.5rem;
+    color: #2c3e50;
+}
+
+.car-price {
+    font-size: 1.25rem;
+    color: #e74c3c;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.car-model {
+    color: #7f8c8d;
+    margin: 0.5rem 0;
+}
+
+.car-description {
+    color: #34495e;
+    margin: 0.5rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.view-details-btn {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.view-details-btn:hover {
+    background-color: #34495e;
+}
+
+.loading, .no-ads {
+    text-align: center;
+    padding: 2rem;
+    color: #7f8c8d;
+    font-size: 1.2rem;
+}
+
+/* Post Ad Form Styles */
+.form-section {
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    min-height: 60vh;
+}
+
+textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.nav-link.logout-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.nav-link.logout-btn:hover {
+    background-color: #c0392b;
+}
+
+/* File Input Styles */
+.form-file-input {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.form-file-input:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #c0a080;
+}
+
+.form-file-input::-webkit-file-upload-button {
+    background: linear-gradient(135deg, #c0a080, #8b7355);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 1rem;
+}
+
+.form-file-input::-webkit-file-upload-button:hover {
+    background: linear-gradient(135deg, #8b7355, #6b5a45);
+    transform: translateY(-1px);
+}
+
+/* Image Preview Grid */
+.image-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.image-preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.image-preview-item:hover img {
+    transform: scale(1.05);
+}
+
+@media (max-width: 480px) {
+    .image-preview-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Car Details Modal Styles */
+.car-details-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('../assets/car-bg.jpg') center/cover no-repeat fixed;
+    z-index: 1000;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+}
+
+.car-details-content {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    background: transparent;
+}
+
+.car-details-main {
+    max-width: 1400px;
+    margin: 8rem auto 2rem;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 60% 40%;
+    gap: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.car-images-section {
+    position: relative;
+}
+
+.car-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.car-detail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    padding: 1.5rem;
+    cursor: pointer;
+    font-size: 2rem;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.image-nav-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.image-nav-btn.prev {
+    left: 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.image-nav-btn.next {
+    right: 0;
+    border-radius: 8px 0 0 8px;
+}
+
+.image-thumbnails {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #2c3e50 #f8f9fa;
+}
+
+.image-thumbnails::-webkit-scrollbar {
+    height: 6px;
+}
+
+.image-thumbnails::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.image-thumbnails::-webkit-scrollbar-thumb {
+    background: #2c3e50;
+    border-radius: 10px;
+}
+
+.thumbnail {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.thumbnail:hover,
+.thumbnail.active {
+    opacity: 1;
+    border-color: #2c3e50;
+    transform: scale(1.05);
+}
+
+.car-info-section {
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.car-info-section h2 {
+    color: #fff;
+    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.car-price {
+    font-size: 2rem;
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.car-specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.spec-item {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.spec-label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    min-width: 80px;
+}
+
+.spec-value {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.car-description-full {
+    margin-top: 2rem;
+    padding: 2rem;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.car-description-full h3 {
+    color: #fff;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.car-description-full p {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+.close-button {
+    margin-top: 2rem;
+    width: 100%;
+    padding: 1.2rem;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.close-button:hover {
+    background-color: #34495e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 1200px) {
+    .car-details-main {
+        max-width: 95%;
+        grid-template-columns: 1fr;
+        margin-top: 6rem;
+    }
+
+    .car-image-container {
+        aspect-ratio: 16/9;
+    }
+}
+
+@media (max-width: 768px) {
+    .car-details-main {
+        padding: 1rem;
+        margin-top: 5rem;
+    }
+
+    .car-info-section h2 {
+        font-size: 2rem;
+    }
+
+    .car-price {
+        font-size: 1.75rem;
+    }
+
+    .spec-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+
+    .thumbnail {
+        width: 100px;
+        height: 75px;
+    }
+}
+
+@media (max-width: 480px) {
+    .car-details-main {
+        margin-top: 4rem;
+    }
+
+    .car-info-section {
+        padding: 1rem;
+    }
+
+    .car-info-section h2 {
+        font-size: 1.75rem;
+    }
+
+    .car-price {
+        font-size: 1.5rem;
+        padding: 0.75rem;
+    }
+
+    .car-specs {
+        padding: 1rem;
+    }
+
+    .car-description-full {
+        padding: 1rem;
+    }
+} 
