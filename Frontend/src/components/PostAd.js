@@ -11,6 +11,8 @@ const PostAd = () => {
         year: '',
         price: '',
         description: '',
+        City:'',
+
     });
     const [images, setImages] = useState([]);
     const [imageError, setImageError] = useState('');
@@ -35,8 +37,10 @@ const PostAd = () => {
             setImageError('Please select at least 1 image');
             return;
         }
-        if (files.length > 4) {
-            setImageError('You can only upload up to 4 images');
+
+        // Check if adding new files would exceed the limit
+        if (images.length + files.length > 4) {
+            setImageError('You can only upload up to 4 images in total');
             return;
         }
 
@@ -48,13 +52,22 @@ const PostAd = () => {
             return;
         }
 
-        // Create preview URLs
-        const imageFiles = files.map(file => ({
+        // Create preview URLs and add to existing images
+        const newImages = files.map(file => ({
             file,
             preview: URL.createObjectURL(file)
         }));
 
-        setImages(imageFiles);
+        setImages(prev => [...prev, ...newImages]);
+    };
+
+    const handleDeleteImage = (indexToDelete) => {
+        setImages(prev => {
+            const newImages = prev.filter((_, index) => index !== indexToDelete);
+            // Revoke the URL of the deleted image
+            URL.revokeObjectURL(prev[indexToDelete].preview);
+            return newImages;
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -226,6 +239,19 @@ const PostAd = () => {
                         </div>
 
                         <div className="form-group">
+                            <label htmlFor="City">City Name</label>
+                            <input
+                                type="text"
+                                id="city"
+                                name="city"
+                                value={formData.city}
+                                onChange={handleChange}
+                                required
+                                placeholder="Enter your city"
+                            />
+                        </div>
+
+                        <div className="form-group">
                             <label htmlFor="description">Description</label>
                             <textarea
                                 id="description"
@@ -252,12 +278,30 @@ const PostAd = () => {
                             />
                             {imageError && <div className="error-message">{imageError}</div>}
                             {images.length > 0 && (
-                                <div className="image-preview-grid">
-                                    {images.map((image, index) => (
-                                        <div key={index} className="image-preview-item">
-                                            <img src={image.preview} alt={`Preview ${index + 1}`} />
+                                <div className="image-preview-container">
+                                    <div className="main-preview">
+                                        <img src={images[0].preview} alt="Main preview" className="main-preview-image" />
+                                    </div>
+                                    {images.length > 1 && (
+                                        <div className="thumbnail-gallery">
+                                            {images.map((image, index) => (
+                                                <div key={index} className="thumbnail-container">
+                                                    <img 
+                                                        src={image.preview} 
+                                                        alt={`Preview ${index + 1}`} 
+                                                        className="thumbnail-image"
+                                                    />
+                                                    <button 
+                                                        className="delete-image-btn"
+                                                        onClick={() => handleDeleteImage(index)}
+                                                        title="Delete image"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             )}
                         </div>

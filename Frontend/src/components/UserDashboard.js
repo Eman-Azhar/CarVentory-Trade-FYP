@@ -88,27 +88,39 @@ const UserDashboard = () => {
                             <div className="no-ads">No car advertisements available</div>
                         ) : (
                             <div className="car-ads-grid">
-                                {carAds.map((ad) => (
-                                    <div key={ad._id} className="car-ad-card">
-                                        <img 
-                                            src={ad.imageUrls && ad.imageUrls.length > 0 ? ad.imageUrls[0] : '/default-car.jpg'} 
-                                            alt={`${ad.make} ${ad.model}`} 
-                                            className="car-image"
-                                        />
-                                        <div className="car-details">
-                                            <h3>{ad.title}</h3>
-                                            <p className="car-price">PKR {ad.price.toLocaleString()}</p>
-                                            <p className="car-model">{ad.make} {ad.model} - {ad.year}</p>
-                                            <p className="car-description">{ad.description}</p>
-                                            <button 
-                                                className="view-details-btn"
-                                                onClick={() => handleViewDetails(ad)}
-                                            >
-                                                View Details
-                                            </button>
+                                {carAds.map((ad) => {
+                                    // Ensure image URL is absolute if needed
+                                    let imageUrl = '/default-car.jpg';
+                                    if (ad.imageUrls && ad.imageUrls.length > 0) {
+                                        imageUrl = ad.imageUrls[0].startsWith('http')
+                                            ? ad.imageUrls[0]
+                                            : `http://localhost:5000${ad.imageUrls[0]}`;
+                                    }
+                                    return (
+                                        <div key={ad._id} className="car-ad-card">
+                                            <div className="car-ad-image-wrapper">
+                                                <img 
+                                                    src={imageUrl}
+                                                    alt={`${ad.make} ${ad.model}`}
+                                                    className="car-ad-image"
+                                                    onError={e => { e.target.onerror = null; e.target.src = '/default-car.jpg'; }}
+                                                />
+                                            </div>
+                                            <div className="car-ad-info">
+                                                <h3 className="car-ad-title">{ad.title}</h3>
+                                                <div className="car-ad-price">PKR {ad.price.toLocaleString()}</div>
+                                                <div className="car-ad-meta">{ad.make} {ad.model} - {ad.year}</div>
+                                                <div className="car-ad-description">{ad.description}</div>
+                                                <button 
+                                                    className="view-details-btn"
+                                                    onClick={() => handleViewDetails(ad)}
+                                                >
+                                                    View Details
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
