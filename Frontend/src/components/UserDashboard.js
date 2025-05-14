@@ -9,6 +9,7 @@ const UserDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedCar, setSelectedCar] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,6 +41,27 @@ const UserDashboard = () => {
         setSelectedCar(null);
     };
 
+    const handleCompare = () => {
+        navigate('/compare-cars');
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    // Filter car ads based on search query
+    const filteredCarAds = carAds.filter(ad => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+            ad.title.toLowerCase().includes(searchLower) ||
+            ad.make.toLowerCase().includes(searchLower) ||
+            ad.model.toLowerCase().includes(searchLower) ||
+            ad.description.toLowerCase().includes(searchLower) ||
+            ad.year.toString().includes(searchLower) ||
+            ad.price.toString().includes(searchLower)
+        );
+    });
+
     return (
         <div className="luxury-login-container">
             {selectedCar ? (
@@ -58,6 +80,7 @@ const UserDashboard = () => {
                         <div className="nav-links">
                             <button className="nav-link">Home</button>
                             <button className="nav-link" onClick={() => navigate('/post-ad')}>Post Ad</button>
+                            <button className="nav-link" onClick={handleCompare}>Compare Cars</button>
                             <button className="nav-link">About Us</button>
                             <button className="nav-link">Contact</button>
                             <button className="nav-link logout-btn" onClick={handleLogout}>Logout</button>
@@ -79,16 +102,51 @@ const UserDashboard = () => {
                         </div>
                     </div>
 
+                    {/* Search Bar Section */}
+                    <div className="search-section">
+                        <div className="search-container">
+                            <div className="search-input-wrapper">
+                                <input
+                                    type="text"
+                                    className="search-input"
+                                    placeholder="Search for make, model, year or price..."
+                                    value={searchQuery}
+                                    onChange={handleSearchChange}
+                                />
+                                <button className="search-button">
+                                    <i className="search-icon">🔍</i>
+                                </button>
+                            </div>
+                            {searchQuery && (
+                                <div className="search-results-info">
+                                    Found {filteredCarAds.length} results for "{searchQuery}"
+                                    {filteredCarAds.length === 0 && (
+                                        <button 
+                                            className="clear-search-btn"
+                                            onClick={() => setSearchQuery('')}
+                                        >
+                                            Clear Search
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
                     {/* Car Ads Section */}
                     <div className="car-ads-section">
                         {error && <div className="error-message">{error}</div>}
                         {loading ? (
                             <div className="loading">Loading car advertisements...</div>
-                        ) : carAds.length === 0 ? (
-                            <div className="no-ads">No car advertisements available</div>
+                        ) : filteredCarAds.length === 0 ? (
+                            <div className="no-ads">
+                                {searchQuery ? 
+                                    `No cars found matching "${searchQuery}"` : 
+                                    "No car advertisements available"}
+                            </div>
                         ) : (
                             <div className="car-ads-grid">
-                                {carAds.map((ad) => (
+                                {filteredCarAds.map((ad) => (
                                     <div key={ad._id} className="car-ad-card">
                                         <img 
                                             src={ad.imageUrls && ad.imageUrls.length > 0 ? ad.imageUrls[0] : '/default-car.jpg'} 
