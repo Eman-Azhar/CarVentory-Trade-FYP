@@ -5,6 +5,7 @@ import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import UserDashboard from './components/UserDashboard';
 import PostAd from './components/PostAd';
+import CarComparison from './components/CarComparison';
 import './App.css';
 
 // Protected Route component
@@ -59,6 +60,14 @@ function App() {
                             element={
                                 <ProtectedRoute allowedRole="user">
                                     <PostAd />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/compare-cars"
+                            element={
+                                <ProtectedRoute allowedRole="user">
+                                    <CarComparison />
                                 </ProtectedRoute>
                             }
                         />

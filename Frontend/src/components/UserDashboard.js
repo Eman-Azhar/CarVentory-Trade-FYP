@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -9,6 +10,7 @@ const UserDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedCar, setSelectedCar] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,56 +42,94 @@ const UserDashboard = () => {
         setSelectedCar(null);
     };
 
+    const handleCompare = () => {
+        navigate('/compare-cars');
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const filteredCarAds = carAds.filter(ad => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+            ad.title.toLowerCase().includes(searchLower) ||
+            ad.make.toLowerCase().includes(searchLower) ||
+            ad.model.toLowerCase().includes(searchLower) ||
+            ad.description.toLowerCase().includes(searchLower) ||
+            ad.year.toString().includes(searchLower) ||
+            ad.price.toString().includes(searchLower)
+        );
+    });
+
     return (
         <div className="luxury-login-container">
             {selectedCar ? (
                 <CarDetails car={selectedCar} onClose={handleCloseDetails} />
             ) : (
                 <>
-                    {/* Navigation Bar */}
                     <nav className="main-nav">
                         <div className="nav-logo">
-                            <img 
-                                src="/car-logo.png" 
-                                alt="CarVentory Trade Logo" 
-                                className="nav-logo-img"
-                            />
+                            <img src="/car-logo.png" alt="CarVentory Trade Logo" className="nav-logo-img" />
                         </div>
                         <div className="nav-links">
                             <button className="nav-link">Home</button>
                             <button className="nav-link" onClick={() => navigate('/post-ad')}>Post Ad</button>
+                            <button className="nav-link" onClick={handleCompare}>Compare Cars</button>
                             <button className="nav-link">About Us</button>
                             <button className="nav-link">Contact</button>
                             <button className="nav-link logout-btn" onClick={handleLogout}>Logout</button>
                         </div>
                     </nav>
 
-                    {/* Branding Section */}
                     <div className="branding-section">
                         <div className="branding-content">
                             <div className="logo-container">
-                                <img 
-                                    src="/car-logo.png" 
-                                    alt="CarVentory Trade Logo" 
-                                    className="car-logo"
-                                />
+                                <img src="/car-logo.png" alt="CarVentory Trade Logo" className="car-logo" />
                             </div>
                             <h1 className="luxury-logo">CarVentory Trade</h1>
                             <p className="luxury-tagline">Discover Your Perfect Ride</p>
                         </div>
                     </div>
 
-                    {/* Car Ads Section */}
+                    <div className="search-section">
+                        <div className="search-container">
+                            <div className="search-input-wrapper">
+                                <input
+                                    type="text"
+                                    className="search-input"
+                                    placeholder="Search for make, model, year or price..."
+                                    value={searchQuery}
+                                    onChange={handleSearchChange}
+                                />
+                                <button className="search-button">
+                                    <i className="search-icon">🔍</i>
+                                </button>
+                            </div>
+                            {searchQuery && (
+                                <div className="search-results-info">
+                                    Found {filteredCarAds.length} results for "{searchQuery}"
+                                    {filteredCarAds.length === 0 && (
+                                        <button className="clear-search-btn" onClick={() => setSearchQuery('')}>
+                                            Clear Search
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
                     <div className="car-ads-section">
                         {error && <div className="error-message">{error}</div>}
                         {loading ? (
                             <div className="loading">Loading car advertisements...</div>
-                        ) : carAds.length === 0 ? (
-                            <div className="no-ads">No car advertisements available</div>
+                        ) : filteredCarAds.length === 0 ? (
+                            <div className="no-ads">
+                                {searchQuery ? `No cars found matching "${searchQuery}"` : "No car advertisements available"}
+                            </div>
                         ) : (
                             <div className="car-ads-grid">
-                                {carAds.map((ad) => {
-                                    // Ensure image URL is absolute if needed
+                                {filteredCarAds.map((ad) => {
                                     let imageUrl = '/default-car.jpg';
                                     if (ad.imageUrls && ad.imageUrls.length > 0) {
                                         imageUrl = ad.imageUrls[0].startsWith('http')
@@ -99,7 +139,7 @@ const UserDashboard = () => {
                                     return (
                                         <div key={ad._id} className="car-ad-card">
                                             <div className="car-ad-image-wrapper">
-                                                <img 
+                                                <img
                                                     src={imageUrl}
                                                     alt={`${ad.make} ${ad.model}`}
                                                     className="car-ad-image"
@@ -111,10 +151,7 @@ const UserDashboard = () => {
                                                 <div className="car-ad-price">PKR {ad.price.toLocaleString()}</div>
                                                 <div className="car-ad-meta">{ad.make} {ad.model} - {ad.year}</div>
                                                 <div className="car-ad-description">{ad.description}</div>
-                                                <button 
-                                                    className="view-details-btn"
-                                                    onClick={() => handleViewDetails(ad)}
-                                                >
+                                                <button className="view-details-btn" onClick={() => handleViewDetails(ad)}>
                                                     View Details
                                                 </button>
                                             </div>
@@ -125,7 +162,6 @@ const UserDashboard = () => {
                         )}
                     </div>
 
-                    {/* Footer Section */}
                     <footer className="login-footer">
                         <div className="footer-content">
                             <p className="copyright">© 2025 CarVentory</p>
@@ -144,4 +180,4 @@ const UserDashboard = () => {
     );
 };
 
-export default UserDashboard; 
+export default UserDashboard;
