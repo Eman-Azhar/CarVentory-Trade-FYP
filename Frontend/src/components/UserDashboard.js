@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
 import CarDetails from './CarDetails';
+import ImageGallery from './ImageGallery';
 
 const UserDashboard = () => {
     const [carAds, setCarAds] = useState([]);
@@ -16,6 +17,11 @@ const UserDashboard = () => {
         const fetchCarAds = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/api/cars');
+                console.log("API Response:", response.data);
+                // Check image URLs in the response
+                if (response.data.length > 0) {
+                    console.log("First car image URLs:", response.data[0].imageUrls);
+                }
                 setCarAds(response.data);
             } catch (err) {
                 setError('Failed to fetch car advertisements');
@@ -47,6 +53,12 @@ const UserDashboard = () => {
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
+    };
+
+    // Function to get full image URL
+    const getImageUrl = (url) => {
+        if (!url) return '/default-car.jpg';
+        return url.startsWith('http') ? url : `http://localhost:5000${url}`;
     };
 
     // Filter car ads based on search query
@@ -149,11 +161,12 @@ const UserDashboard = () => {
                             <div className="car-ads-grid">
                                 {filteredCarAds.map((ad) => (
                                     <div key={ad._id} className="car-ad-card">
-                                        <img 
-                                            src={ad.imageUrls && ad.imageUrls.length > 0 ? ad.imageUrls[0] : '/default-car.jpg'} 
-                                            alt={`${ad.make} ${ad.model}`} 
-                                            className="car-image"
-                                        />
+                                        <div className="car-image-wrapper">
+                                            <ImageGallery 
+                                                images={ad.imageUrls} 
+                                                defaultImage="/default-car.jpg"
+                                            />
+                                        </div>
                                         <div className="car-details">
                                             <h3>{ad.title}</h3>
                                             <p className="car-price">PKR {ad.price.toLocaleString()}</p>
