@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import UserDashboard from './components/UserDashboard';
+import UserProfile from './components/UserProfile';
 import PostAd from './components/PostAd';
 import CarComparison from './components/CarComparison';
 import './App.css';
@@ -52,6 +53,14 @@ function App() {
                             element={
                                 <ProtectedRoute allowedRole="user">
                                     <UserDashboard />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/user-profile"
+                            element={
+                                <ProtectedRoute allowedRole="user">
+                                    <UserProfile />
                                 </ProtectedRoute>
                             }
                         />
