@@ -80,6 +80,7 @@ const UserDashboard = () => {
                         <div className="nav-links">
                             <button className="nav-link">Home</button>
                             <button className="nav-link" onClick={() => navigate('/post-ad')}>Post Ad</button>
+                            <button className="nav-link" onClick={() => navigate('/user-profile')}>My Profile</button>
                             <button className="nav-link" onClick={handleCompare}>Compare Cars</button>
                             <button className="nav-link">About Us</button>
                             <button className="nav-link">Contact</button>

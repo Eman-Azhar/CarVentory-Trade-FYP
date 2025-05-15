@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
@@ -16,7 +16,39 @@ const PostAd = () => {
     const [imageError, setImageError] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [adCount, setAdCount] = useState(0);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData) {
+            navigate('/login');
+            return;
+        }
+        setUser(userData);
+
+        // Check how many ads the user already has
+        const checkUserAds = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/cars/user/${userData._id}`, {
+                    headers: {
+                        Authorization: `Bearer ${userData.token}`
+                    }
+                });
+                setAdCount(response.data.length);
+                
+                // If user already has 5 ads, redirect to profile
+                if (response.data.length >= 5) {
+                    setError('You have reached the maximum limit of 5 ads');
+                }
+            } catch (err) {
+                console.error('Error checking user ads:', err);
+            }
+        };
+
+        checkUserAds();
+    }, [navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -63,6 +95,13 @@ const PostAd = () => {
         setImageError('');
         setLoading(true);
 
+        // Check if user has reached the ad limit
+        if (adCount >= 5) {
+            setError('You have reached the maximum limit of 5 ads');
+            setLoading(false);
+            return;
+        }
+
         // Validate images
         if (images.length === 0) {
             setImageError('Please select at least 1 image');
@@ -71,7 +110,6 @@ const PostAd = () => {
         }
 
         try {
-            const user = JSON.parse(localStorage.getItem('user'));
             if (!user || !user.token) {
                 throw new Error('You must be logged in to post an advertisement');
             }
@@ -95,7 +133,7 @@ const PostAd = () => {
                 }
             });
             
-            navigate('/user-dashboard');
+            navigate('/user-profile');
         } catch (err) {
             setError(err.response?.data?.message || err.message || 'Failed to post advertisement');
             console.error('Error posting car ad:', err);
@@ -129,6 +167,8 @@ const PostAd = () => {
                 </div>
                 <div className="nav-links">
                     <button className="nav-link" onClick={() => navigate('/user-dashboard')}>Home</button>
+                    <button className="nav-link" onClick={() => navigate('/user-profile')}>My Profile</button>
+                    <button className="nav-link" onClick={() => navigate('/compare-cars')}>Compare Cars</button>
                     <button className="nav-link">About Us</button>
                     <button className="nav-link">Contact</button>
                     <button className="nav-link logout-btn" onClick={handleLogout}>Logout</button>
@@ -156,122 +196,139 @@ const PostAd = () => {
                     <h2 className="form-title">Post Your Car Advertisement</h2>
                     {error && <div className="error-message">{error}</div>}
                     
-                    <form onSubmit={handleSubmit} className="auth-form">
-                        <div className="form-group">
-                            <label htmlFor="title">Advertisement Title</label>
-                            <input
-                                type="text"
-                                id="title"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                required
-                                placeholder="Enter a catchy title for your ad"
-                            />
+                    {adCount >= 5 ? (
+                        <div className="limit-message">
+                            <p>You have reached the maximum limit of 5 advertisements.</p>
+                            <p>Please delete some existing ads before posting new ones.</p>
+                            <button 
+                                className="view-profile-btn"
+                                onClick={() => navigate('/user-profile')}
+                            >
+                                Manage Your Ads
+                            </button>
                         </div>
+                    ) : (
+                        <form onSubmit={handleSubmit} className="auth-form">
+                            <div className="form-group">
+                                <label htmlFor="title">Advertisement Title</label>
+                                <input
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                    value={formData.title}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Enter a catchy title for your ad"
+                                />
+                            </div>
 
-                        <div className="form-group">
-                            <label htmlFor="make">Car Make</label>
-                            <input
-                                type="text"
-                                id="make"
-                                name="make"
-                                value={formData.make}
-                                onChange={handleChange}
-                                required
-                                placeholder="e.g., Toyota, Honda, BMW"
-                            />
-                        </div>
+                            <div className="form-group">
+                                <label htmlFor="make">Car Make</label>
+                                <input
+                                    type="text"
+                                    id="make"
+                                    name="make"
+                                    value={formData.make}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="e.g., Toyota, Honda, BMW"
+                                />
+                            </div>
 
-                        <div className="form-group">
-                            <label htmlFor="model">Car Model</label>
-                            <input
-                                type="text"
-                                id="model"
-                                name="model"
-                                value={formData.model}
-                                onChange={handleChange}
-                                required
-                                placeholder="e.g., Camry, Civic, 3 Series"
-                            />
-                        </div>
+                            <div className="form-group">
+                                <label htmlFor="model">Car Model</label>
+                                <input
+                                    type="text"
+                                    id="model"
+                                    name="model"
+                                    value={formData.model}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="e.g., Camry, Civic, 3 Series"
+                                />
+                            </div>
 
-                        <div className="form-group">
-                            <label htmlFor="year">Year</label>
-                            <input
-                                type="number"
-                                id="year"
-                                name="year"
-                                value={formData.year}
-                                onChange={handleChange}
-                                required
-                                placeholder="Enter car manufacturing year"
-                                min="1900"
-                                max={new Date().getFullYear()}
-                            />
-                        </div>
+                            <div className="form-group">
+                                <label htmlFor="year">Year</label>
+                                <input
+                                    type="number"
+                                    id="year"
+                                    name="year"
+                                    value={formData.year}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Enter car manufacturing year"
+                                    min="1900"
+                                    max={new Date().getFullYear()}
+                                />
+                            </div>
 
-                        <div className="form-group">
-                            <label htmlFor="price">Price (PKR)</label>
-                            <input
-                                type="number"
-                                id="price"
-                                name="price"
-                                value={formData.price}
-                                onChange={handleChange}
-                                required
-                                placeholder="Enter price in PKR"
-                                min="0"
-                            />
-                        </div>
+                            <div className="form-group">
+                                <label htmlFor="price">Price (PKR)</label>
+                                <input
+                                    type="number"
+                                    id="price"
+                                    name="price"
+                                    value={formData.price}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Enter price in PKR"
+                                    min="0"
+                                />
+                            </div>
 
-                        <div className="form-group">
-                            <label htmlFor="description">Description</label>
-                            <textarea
-                                id="description"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                required
-                                placeholder="Describe your car's features, condition, and other details"
-                                rows="4"
-                                className="form-textarea"
-                            />
-                        </div>
+                            <div className="form-group">
+                                <label htmlFor="description">Description</label>
+                                <textarea
+                                    id="description"
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Describe your car's features, condition, and other details"
+                                    rows="4"
+                                    className="form-textarea"
+                                />
+                            </div>
 
-                        <div className="form-group">
-                            <label htmlFor="images">Car Photos (1-4 images)</label>
-                            <input
-                                type="file"
-                                id="images"
-                                name="images"
-                                onChange={handleImageChange}
-                                accept="image/jpeg,image/png,image/jpg,image/webp"
-                                multiple
-                                className="form-file-input"
-                            />
-                            {imageError && <div className="error-message">{imageError}</div>}
-                            {images.length > 0 && (
-                                <div className="image-preview-grid">
-                                    {images.map((image, index) => (
-                                        <div key={index} className="image-preview-item">
-                                            <img src={image.preview} alt={`Preview ${index + 1}`} />
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                            <div className="form-group">
+                                <label htmlFor="images">Car Photos (1-4 images)</label>
+                                <input
+                                    type="file"
+                                    id="images"
+                                    name="images"
+                                    onChange={handleImageChange}
+                                    accept="image/jpeg,image/png,image/jpg,image/webp"
+                                    multiple
+                                />
+                                {imageError && <div className="error-text">{imageError}</div>}
+                                {images.length > 0 && (
+                                    <div className="image-previews">
+                                        {images.map((image, index) => (
+                                            <img 
+                                                key={index} 
+                                                src={image.preview} 
+                                                alt={`Preview ${index + 1}`}
+                                                className="image-preview"
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
 
-                        <button 
-                            type="submit" 
-                            className="submit-button"
-                            disabled={loading || images.length === 0}
-                        >
-                            {loading ? (
-                                <span className="loading-spinner"></span>
-                            ) : 'Post Advertisement'}
-                        </button>
-                    </form>
+                            <button 
+                                type="submit" 
+                                className="submit-btn" 
+                                disabled={loading}
+                            >
+                                {loading ? 'Posting...' : 'Post Advertisement'}
+                            </button>
+
+                            <div className="ad-count-info">
+                                <p>You have posted {adCount} out of 5 allowed advertisements</p>
+                            </div>
+                        </form>
+                    )}
                 </div>
             </section>
 
