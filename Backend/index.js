@@ -5,6 +5,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const authRoutes = require('./server/routes/authRoutes');
 const carRoutes = require('./server/routes/carRoutes');
+const offerRoutes = require('./server/routes/offerRoutes');
 require("dotenv").config({ path: "./server/config.env" });
 
 const app = express();
@@ -33,6 +34,7 @@ mongoose.connect(process.env.ATLAS_URI, {
     // Routes
     app.use('/api/auth', authRoutes);
     app.use('/api/cars', carRoutes);
+    app.use('/api/offers', offerRoutes);
 
     // Start server
     app.listen(port, () => {

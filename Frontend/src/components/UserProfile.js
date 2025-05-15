@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import OffersManager from './OffersManager';
+import ImageGallery from './ImageGallery';
 import './Auth.css';
 
 const UserProfile = () => {
@@ -10,6 +12,7 @@ const UserProfile = () => {
     const [adCount, setAdCount] = useState(0);
     const [user, setUser] = useState(null);
     const [editingAd, setEditingAd] = useState(null);
+    const [activeTab, setActiveTab] = useState('ads');
     const [formData, setFormData] = useState({
         title: '',
         make: '',
@@ -35,6 +38,11 @@ const UserProfile = () => {
                         Authorization: `Bearer ${userData.token}`
                     }
                 });
+                console.log("User Ads Response:", response.data);
+                // Check image structure in the first ad if available
+                if (response.data.length > 0) {
+                    console.log("First ad images:", response.data[0].imageUrls);
+                }
                 setUserAds(response.data);
                 setAdCount(response.data.length);
             } catch (err) {
@@ -118,6 +126,149 @@ const UserProfile = () => {
         setEditingAd(null);
     };
 
+    // Function to get full image URL
+    const getImageUrl = (url) => {
+        if (!url) return '/default-car.jpg';
+        return url.startsWith('http') ? url : `http://localhost:5000${url}`;
+    };
+
+    const renderMyAds = () => {
+        if (loading) {
+            return <div className="loading">Loading your advertisements...</div>;
+        }
+        
+        if (userAds.length === 0) {
+            return (
+                <div className="no-ads">
+                    <p>You haven't posted any advertisements yet.</p>
+                    <button 
+                        className="post-ad-btn"
+                        onClick={() => navigate('/post-ad')}
+                        disabled={adCount >= 5}
+                    >
+                        Post Your First Ad
+                    </button>
+                </div>
+            );
+        }
+        
+        return (
+            <div className="user-ads-grid">
+                {userAds.map((ad) => (
+                    <div key={ad._id} className="user-ad-card">
+                        {editingAd && editingAd._id === ad._id ? (
+                            <div className="edit-ad-form">
+                                <h3>Edit Advertisement</h3>
+                                <form onSubmit={handleSubmitEdit}>
+                                    <div className="form-group">
+                                        <label htmlFor="title">Title</label>
+                                        <input
+                                            type="text"
+                                            id="title"
+                                            name="title"
+                                            value={formData.title}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="make">Make</label>
+                                        <input
+                                            type="text"
+                                            id="make"
+                                            name="make"
+                                            value={formData.make}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="model">Model</label>
+                                        <input
+                                            type="text"
+                                            id="model"
+                                            name="model"
+                                            value={formData.model}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="year">Year</label>
+                                        <input
+                                            type="number"
+                                            id="year"
+                                            name="year"
+                                            value={formData.year}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="price">Price (PKR)</label>
+                                        <input
+                                            type="number"
+                                            id="price"
+                                            name="price"
+                                            value={formData.price}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="description">Description</label>
+                                        <textarea
+                                            id="description"
+                                            name="description"
+                                            value={formData.description}
+                                            onChange={handleChange}
+                                            required
+                                            rows="4"
+                                            className="form-textarea"
+                                        />
+                                    </div>
+                                    <div className="form-actions">
+                                        <button type="submit" className="save-btn">Save Changes</button>
+                                        <button type="button" className="cancel-btn" onClick={handleCancelEdit}>Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="car-image-wrapper">
+                                    <ImageGallery 
+                                        images={ad.imageUrls} 
+                                        defaultImage="/default-car.jpg"
+                                    />
+                                </div>
+                                <div className="car-details">
+                                    <h3>{ad.title}</h3>
+                                    <p className="car-price">PKR {ad.price.toLocaleString()}</p>
+                                    <p className="car-model">{ad.make} {ad.model} - {ad.year}</p>
+                                    <p className="car-description">{ad.description}</p>
+                                    <div className="ad-actions">
+                                        <button 
+                                            className="edit-btn"
+                                            onClick={() => handleEditClick(ad)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button 
+                                            className="delete-btn"
+                                            onClick={() => handleDeleteAd(ad._id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
     return (
         <div className="luxury-login-container">
             {/* Navigation Bar */}
@@ -168,136 +319,34 @@ const UserProfile = () => {
                 )}
             </div>
 
-            {/* User Ads Section */}
-            <div className="user-ads-section">
-                <h2>My Advertisements</h2>
+            {/* Profile Tabs */}
+            <div className="profile-tabs">
+                <button 
+                    className={`tab-btn ${activeTab === 'ads' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('ads')}
+                >
+                    My Advertisements
+                </button>
+                <button 
+                    className={`tab-btn ${activeTab === 'offers' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('offers')}
+                >
+                    Offers
+                </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="tab-content">
                 {error && <div className="error-message">{error}</div>}
                 
-                {loading ? (
-                    <div className="loading">Loading your advertisements...</div>
-                ) : userAds.length === 0 ? (
-                    <div className="no-ads">
-                        <p>You haven't posted any advertisements yet.</p>
-                        <button 
-                            className="post-ad-btn"
-                            onClick={() => navigate('/post-ad')}
-                            disabled={adCount >= 5}
-                        >
-                            Post Your First Ad
-                        </button>
+                {activeTab === 'ads' ? (
+                    <div className="user-ads-section">
+                        <h2>My Advertisements</h2>
+                        {renderMyAds()}
                     </div>
                 ) : (
-                    <div className="user-ads-grid">
-                        {userAds.map((ad) => (
-                            <div key={ad._id} className="user-ad-card">
-                                {editingAd && editingAd._id === ad._id ? (
-                                    <div className="edit-ad-form">
-                                        <h3>Edit Advertisement</h3>
-                                        <form onSubmit={handleSubmitEdit}>
-                                            <div className="form-group">
-                                                <label htmlFor="title">Title</label>
-                                                <input
-                                                    type="text"
-                                                    id="title"
-                                                    name="title"
-                                                    value={formData.title}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="make">Make</label>
-                                                <input
-                                                    type="text"
-                                                    id="make"
-                                                    name="make"
-                                                    value={formData.make}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="model">Model</label>
-                                                <input
-                                                    type="text"
-                                                    id="model"
-                                                    name="model"
-                                                    value={formData.model}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="year">Year</label>
-                                                <input
-                                                    type="number"
-                                                    id="year"
-                                                    name="year"
-                                                    value={formData.year}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="price">Price (PKR)</label>
-                                                <input
-                                                    type="number"
-                                                    id="price"
-                                                    name="price"
-                                                    value={formData.price}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="description">Description</label>
-                                                <textarea
-                                                    id="description"
-                                                    name="description"
-                                                    value={formData.description}
-                                                    onChange={handleChange}
-                                                    required
-                                                    rows="4"
-                                                    className="form-textarea"
-                                                />
-                                            </div>
-                                            <div className="form-actions">
-                                                <button type="submit" className="save-btn">Save Changes</button>
-                                                <button type="button" className="cancel-btn" onClick={handleCancelEdit}>Cancel</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <img 
-                                            src={ad.imageUrls && ad.imageUrls.length > 0 ? ad.imageUrls[0] : '/default-car.jpg'} 
-                                            alt={`${ad.make} ${ad.model}`} 
-                                            className="car-image"
-                                        />
-                                        <div className="car-details">
-                                            <h3>{ad.title}</h3>
-                                            <p className="car-price">PKR {ad.price.toLocaleString()}</p>
-                                            <p className="car-model">{ad.make} {ad.model} - {ad.year}</p>
-                                            <p className="car-description">{ad.description}</p>
-                                            <div className="ad-actions">
-                                                <button 
-                                                    className="edit-btn"
-                                                    onClick={() => handleEditClick(ad)}
-                                                >
-                                                    Edit
-                                                </button>
-                                                <button 
-                                                    className="delete-btn"
-                                                    onClick={() => handleDeleteAd(ad._id)}
-                                                >
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        ))}
+                    <div className="user-offers-section">
+                        <OffersManager />
                     </div>
                 )}
             </div>
