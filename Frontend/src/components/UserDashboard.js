@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -56,8 +55,6 @@ const UserDashboard = () => {
         setSearchQuery(e.target.value);
     };
 
-<<<<<<< HEAD
-=======
     // Function to get full image URL
     const getImageUrl = (url) => {
         if (!url) return '/default-car.jpg';
@@ -65,7 +62,6 @@ const UserDashboard = () => {
     };
 
     // Filter car ads based on search query
->>>>>>> sameel
     const filteredCarAds = carAds.filter(ad => {
         const searchLower = searchQuery.toLowerCase();
         return (
