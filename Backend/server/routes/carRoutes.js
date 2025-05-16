@@ -66,7 +66,7 @@ router.post('/', auth, (req, res, next) => {
         }
 
         try {
-            const { title, make, model, year, price, description } = req.body;
+            const { title, make, model, year, price, description, mileage, transmission, color, fuelType, engineType, condition, sellerName, sellerPhone, sellerEmail } = req.body;
             
             // Handle image uploads
             let imageUrls = [];
@@ -81,6 +81,15 @@ router.post('/', auth, (req, res, next) => {
                 year,
                 price,
                 description,
+                mileage,
+                transmission,
+                color,
+                fuelType,
+                engineType,
+                condition,
+                sellerName,
+                sellerPhone,
+                sellerEmail,
                 imageUrls,
                 userId: req.user.id
             });

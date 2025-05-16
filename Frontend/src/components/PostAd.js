@@ -11,7 +11,16 @@ const PostAd = () => {
         year: '',
         price: '',
         description: '',
-        city: '',  // make sure this matches your form field name and case
+        city: '',
+        mileage: '',
+        transmission: '',
+        color: '',
+        fuelType: '',
+        engineType: '',
+        condition: '',
+        sellerName: '',
+        sellerPhone: '',
+        sellerEmail: '',
     });
     const [images, setImages] = useState([]);
     const [imageError, setImageError] = useState('');
@@ -179,7 +188,7 @@ const PostAd = () => {
             </div>
 
             <section className="form-container">
-                <div className="form-wrapper">
+                <div className="form-wrapper post-ad-wrapper">
                     <h2 className="form-title">Post Your Car Advertisement</h2>
                     {error && <div className="error-message">{error}</div>}
 
@@ -192,149 +201,391 @@ const PostAd = () => {
                             </button>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="auth-form">
-                            <div className="form-group">
-                                <label htmlFor="title">Advertisement Title</label>
-                                <input
-                                    type="text"
-                                    id="title"
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Enter a catchy title for your ad"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="make">Car Make</label>
-                                <input
-                                    type="text"
-                                    id="make"
-                                    name="make"
-                                    value={formData.make}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="e.g., Toyota, Honda, BMW"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="model">Car Model</label>
-                                <input
-                                    type="text"
-                                    id="model"
-                                    name="model"
-                                    value={formData.model}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="e.g., Camry, Civic, 3 Series"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="year">Year</label>
-                                <input
-                                    type="number"
-                                    id="year"
-                                    name="year"
-                                    value={formData.year}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Enter car manufacturing year"
-                                    min="1900"
-                                    max={new Date().getFullYear()}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="price">Price (PKR)</label>
-                                <input
-                                    type="number"
-                                    id="price"
-                                    name="price"
-                                    value={formData.price}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Enter price in PKR"
-                                    min="0"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="city">City Name</label>
-                                <input
-                                    type="text"
-                                    id="city"
-                                    name="city"
-                                    value={formData.city}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Enter your city"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="description">Description</label>
-                                <textarea
-                                    id="description"
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Describe your car's features, condition, and other details"
-                                    rows="4"
-                                    className="form-textarea"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="images">Car Photos (1-4 images)</label>
-                                <input
-                                    type="file"
-                                    id="images"
-                                    name="images"
-                                    onChange={handleImageChange}
-                                    accept="image/jpeg,image/png,image/jpg,image/webp"
-                                    multiple
-                                    className="form-file-input"
-                                />
-                                {imageError && <div className="error-message">{imageError}</div>}
-                                {images.length > 0 && (
-                                    <div className="image-preview-container">
-                                        <div className="main-preview">
-                                            <img src={images[0].preview} alt="Main preview" className="main-preview-image" />
-                                        </div>
-                                        {images.length > 1 && (
-                                            <div className="thumbnail-gallery">
-                                                {images.map((image, index) => (
-                                                    <div key={index} className="thumbnail-container">
-                                                        <img 
-                                                            src={image.preview} 
-                                                            alt={`Preview ${index + 1}`} 
-                                                            className="thumbnail-image"
-                                                        />
-                                                        <button 
-                                                            className="delete-image-btn"
-                                                            onClick={() => handleDeleteImage(index)}
-                                                            title="Delete image"
-                                                        >
-                                                            ×
-                                                        </button>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
+                        <form onSubmit={handleSubmit} className="auth-form post-ad-form">
+                            <div className="form-section">
+                                <h3 className="section-title">Car Details</h3>
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label htmlFor="title">Advertisement Title</label>
+                                        <input
+                                            type="text"
+                                            id="title"
+                                            name="title"
+                                            value={formData.title}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Enter a catchy title for your ad"
+                                        />
                                     </div>
-                                )}
+
+                                    <div className="form-group">
+                                        <label htmlFor="city">City Name</label>
+                                        <input
+                                            type="text"
+                                            id="city"
+                                            name="city"
+                                            value={formData.city}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Enter your city"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="make">Car Make</label>
+                                        <input
+                                            type="text"
+                                            id="make"
+                                            name="make"
+                                            value={formData.make}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="e.g., Toyota, Honda, BMW"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="model">Car Model</label>
+                                        <input
+                                            type="text"
+                                            id="model"
+                                            name="model"
+                                            value={formData.model}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="e.g., Camry, Civic, 3 Series"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="year">Year</label>
+                                        <input
+                                            type="number"
+                                            id="year"
+                                            name="year"
+                                            value={formData.year}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Enter car manufacturing year"
+                                            min="1900"
+                                            max={new Date().getFullYear()}
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="price">Price (PKR)</label>
+                                        <input
+                                            type="number"
+                                            id="price"
+                                            name="price"
+                                            value={formData.price}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Enter price in PKR"
+                                            min="0"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="form-group full-width">
+                                    <label htmlFor="description">Description</label>
+                                    <textarea
+                                        id="description"
+                                        name="description"
+                                        value={formData.description}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Describe your car's features, condition, and other details"
+                                        rows="4"
+                                        className="form-textarea"
+                                    />
+                                </div>
                             </div>
 
-                            <button type="submit" className="submit-btn" disabled={loading}>
-                                {loading ? 'Posting...' : 'Post Advertisement'}
-                            </button>
+                            <div className="form-section">
+                                <h3 className="section-title">Car Specifications</h3>
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label htmlFor="mileage">Mileage (KM)</label>
+                                        <input
+                                            type="number"
+                                            id="mileage"
+                                            name="mileage"
+                                            value={formData.mileage}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Enter car mileage"
+                                            min="0"
+                                        />
+                                    </div>
 
-                            <div className="ad-count-info">
-                                <p>You have posted {adCount} out of 5 allowed advertisements</p>
+                                    <div className="form-group">
+                                        <label htmlFor="engineType">Engine Type (cc)</label>
+                                        <input
+                                            type="number"
+                                            id="engineType"
+                                            name="engineType"
+                                            value={formData.engineType}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Enter engine capacity"
+                                            min="0"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Transmission Type</label>
+                                        <div className="radio-group">
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="transmission"
+                                                    value="Manual"
+                                                    checked={formData.transmission === 'Manual'}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                                Manual
+                                            </label>
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="transmission"
+                                                    value="Automatic"
+                                                    checked={formData.transmission === 'Automatic'}
+                                                    onChange={handleChange}
+                                                />
+                                                Automatic
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="color">Car Color</label>
+                                        <select
+                                            id="color"
+                                            name="color"
+                                            value={formData.color}
+                                            onChange={handleChange}
+                                            required
+                                            className="form-select"
+                                        >
+                                            <option value="">Select Color</option>
+                                            <option value="White">White</option>
+                                            <option value="Black">Black</option>
+                                            <option value="Silver">Silver</option>
+                                            <option value="Gray">Gray</option>
+                                            <option value="Red">Red</option>
+                                            <option value="Blue">Blue</option>
+                                            <option value="Green">Green</option>
+                                            <option value="Yellow">Yellow</option>
+                                            <option value="Brown">Brown</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Fuel Type</label>
+                                        <div className="radio-group">
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="fuelType"
+                                                    value="Petrol"
+                                                    checked={formData.fuelType === 'Petrol'}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                                Petrol
+                                            </label>
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="fuelType"
+                                                    value="Diesel"
+                                                    checked={formData.fuelType === 'Diesel'}
+                                                    onChange={handleChange}
+                                                />
+                                                Diesel
+                                            </label>
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="fuelType"
+                                                    value="CNG"
+                                                    checked={formData.fuelType === 'CNG'}
+                                                    onChange={handleChange}
+                                                />
+                                                CNG
+                                            </label>
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="fuelType"
+                                                    value="Hybrid"
+                                                    checked={formData.fuelType === 'Hybrid'}
+                                                    onChange={handleChange}
+                                                />
+                                                Hybrid
+                                            </label>
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="fuelType"
+                                                    value="Electric"
+                                                    checked={formData.fuelType === 'Electric'}
+                                                    onChange={handleChange}
+                                                />
+                                                Electric
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Car Condition</label>
+                                        <div className="radio-group">
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="condition"
+                                                    value="Brand New"
+                                                    checked={formData.condition === 'Brand New'}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                                Brand New
+                                            </label>
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="condition"
+                                                    value="Used (Excellent)"
+                                                    checked={formData.condition === 'Used (Excellent)'}
+                                                    onChange={handleChange}
+                                                />
+                                                Used (Excellent)
+                                            </label>
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="condition"
+                                                    value="Used (Good)"
+                                                    checked={formData.condition === 'Used (Good)'}
+                                                    onChange={handleChange}
+                                                />
+                                                Used (Good)
+                                            </label>
+                                            <label className="radio-label">
+                                                <input
+                                                    type="radio"
+                                                    name="condition"
+                                                    value="Needs Repair"
+                                                    checked={formData.condition === 'Needs Repair'}
+                                                    onChange={handleChange}
+                                                />
+                                                Needs Repair
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="form-section">
+                                <h3 className="section-title">Car Photos</h3>
+                                <div className="form-group">
+                                    <label htmlFor="images">Upload Images (1-4 images)</label>
+                                    <input
+                                        type="file"
+                                        id="images"
+                                        name="images"
+                                        onChange={handleImageChange}
+                                        accept="image/jpeg,image/png,image/jpg,image/webp"
+                                        multiple
+                                        className="form-file-input"
+                                    />
+                                    {imageError && <div className="error-message">{imageError}</div>}
+                                    {images.length > 0 && (
+                                        <div className="image-preview-container">
+                                            <div className="main-preview">
+                                                <img src={images[0].preview} alt="Main preview" className="main-preview-image" />
+                                            </div>
+                                            {images.length > 1 && (
+                                                <div className="thumbnail-gallery">
+                                                    {images.map((image, index) => (
+                                                        <div key={index} className="thumbnail-container">
+                                                            <img 
+                                                                src={image.preview} 
+                                                                alt={`Preview ${index + 1}`} 
+                                                                className="thumbnail-image"
+                                                            />
+                                                            <button 
+                                                                className="delete-image-btn"
+                                                                onClick={() => handleDeleteImage(index)}
+                                                                title="Delete image"
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="form-section">
+                                <h3 className="section-title">Seller Information</h3>
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label htmlFor="sellerName">Seller Name</label>
+                                        <input
+                                            type="text"
+                                            id="sellerName"
+                                            name="sellerName"
+                                            value={formData.sellerName}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Enter your full name"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="sellerPhone">Phone Number</label>
+                                        <input
+                                            type="tel"
+                                            id="sellerPhone"
+                                            name="sellerPhone"
+                                            value={formData.sellerPhone}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Enter your phone number"
+                                            pattern="[0-9]{11}"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="sellerEmail">Email Address</label>
+                                        <input
+                                            type="email"
+                                            id="sellerEmail"
+                                            name="sellerEmail"
+                                            value={formData.sellerEmail}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Enter your email address"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="form-actions">
+                                <button type="submit" className="submit-btn post-ad-btn" disabled={loading}>
+                                    {loading ? 'Posting...' : 'Post Advertisement'}
+                                </button>
+                                <div className="ad-count-info">
+                                    <p>You have posted {adCount} out of 5 allowed advertisements</p>
+                                </div>
                             </div>
                         </form>
                     )}

@@ -70,38 +70,66 @@ const CarDetails = ({ car, onClose }) => {
                         </div>
                     </nav>
 
-                    <div className="car-details-main">
-                        <div className="car-images-section">
+                    <div className="car-details-main" style={{display: 'grid', gridTemplateColumns: '40% 60%', gap: '2rem'}}>
+                        <div className="car-images-section" style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
                             <ImageGallery 
                                 images={car.imageUrls} 
                                 defaultImage="/default-car.jpg"
                             />
+                            {/* Seller Information Section (moved here) */}
+                            <div className="car-description-full" style={{marginTop: '1.5rem'}}>
+                                <h3>Seller Information</h3>
+                                <div className="car-specs">
+                                    <div className="spec-item"><span className="spec-label">Name:</span><span className="spec-value">{car.sellerName}</span></div>
+                                    <div className="spec-item"><span className="spec-label">Phone:</span><span className="spec-value">{car.sellerPhone}</span></div>
+                                    <div className="spec-item"><span className="spec-label">Email:</span><span className="spec-value">{car.sellerEmail}</span></div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="car-info-section">
-                            <h2>{car.title}</h2>
-                            <div className="car-price">PKR {car.price.toLocaleString()}</div>
-                            <div className="car-specs">
-                                <div className="spec-item">
-                                    <span className="spec-label">Make:</span>
-                                    <span className="spec-value">{car.make}</span>
+                        <div className="car-info-section" style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%'}}>
+                            <div>
+                                <h2>{car.title}</h2>
+                                <div className="car-price">PKR {car.price.toLocaleString()}</div>
+                                <div className="car-specs">
+                                    <div className="spec-item">
+                                        <span className="spec-label">Make:</span>
+                                        <span className="spec-value">{car.make}</span>
+                                    </div>
+                                    <div className="spec-item">
+                                        <span className="spec-label">Model:</span>
+                                        <span className="spec-value">{car.model}</span>
+                                    </div>
+                                    <div className="spec-item">
+                                        <span className="spec-label">Year:</span>
+                                        <span className="spec-value">{car.year}</span>
+                                    </div>
                                 </div>
-                                <div className="spec-item">
-                                    <span className="spec-label">Model:</span>
-                                    <span className="spec-value">{car.model}</span>
+                                <div className="car-description-full">
+                                    <h3>Description</h3>
+                                    <p>{car.description}</p>
                                 </div>
-                                <div className="spec-item">
-                                    <span className="spec-label">Year:</span>
-                                    <span className="spec-value">{car.year}</span>
+
+                                {/* Car Specifications Section */}
+                                <div className="car-description-full" style={{marginTop: '1.5rem'}}>
+                                    <h3>Car Specifications</h3>
+                                    <div className="car-specs">
+                                        <div className="spec-item"><span className="spec-label">Mileage:</span><span className="spec-value">{car.mileage} km</span></div>
+                                        <div className="spec-item"><span className="spec-label">Engine Type:</span><span className="spec-value">{car.engineType} cc</span></div>
+                                        <div className="spec-item"><span className="spec-label">Transmission:</span><span className="spec-value">{car.transmission}</span></div>
+                                        <div className="spec-item"><span className="spec-label">Color:</span><span className="spec-value">{car.color}</span></div>
+                                        <div className="spec-item"><span className="spec-label">Fuel Type:</span><span className="spec-value">{car.fuelType}</span></div>
+                                        <div className="spec-item"><span className="spec-label">Condition:</span><span className="spec-value">{car.condition}</span></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="car-description-full">
-                                <h3>Description</h3>
-                                <p>{car.description}</p>
-                            </div>
-                            <div className="car-actions">
+                            {/* Action Buttons Row - at the bottom of the right card */}
+                            <div className="button-row">
                                 <button className="make-offer-btn" onClick={handleMakeOffer}>
                                     Make an Offer
+                                </button>
+                                <button className="make-offer-btn">
+                                    Book Test Drive
                                 </button>
                                 <button className="close-button" onClick={onClose}>
                                     Close
