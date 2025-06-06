@@ -49,6 +49,45 @@ const carSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    mileage: {
+        type: Number,
+        required: [true, 'Please provide the car mileage'],
+        min: [0, 'Mileage cannot be negative']
+    },
+    transmission: {
+        type: String,
+        required: [true, 'Please provide the transmission type'],
+        enum: ['Manual', 'Automatic']
+    },
+    color: {
+        type: String,
+        required: [true, 'Please provide the car color']
+    },
+    fuelType: {
+        type: String,
+        required: [true, 'Please provide the fuel type'],
+        enum: ['Petrol', 'Diesel', 'CNG', 'Hybrid', 'Electric']
+    },
+    engineType: {
+        type: Number,
+        required: [true, 'Please provide the engine type (cc)'],
+        min: [0, 'Engine type cannot be negative']
+    },
+    condition: {
+        type: String,
+        required: [true, 'Please provide the car condition'],
+        enum: ['Brand New', 'Used (Excellent)', 'Used (Good)', 'Needs Repair']
+    },
+    sellerName: {
+        type: String,
+        required: [true, 'Please provide the seller name']
+    },
+    sellerPhone: {
+        type: String
+    },
+    sellerEmail: {
+        type: String
     }
 });
 

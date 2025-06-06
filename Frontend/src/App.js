@@ -4,7 +4,9 @@ import { AuthProvider } from './context/AuthContext';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import UserDashboard from './components/UserDashboard';
+import UserProfile from './components/UserProfile';
 import PostAd from './components/PostAd';
+import CarComparison from './components/CarComparison';
 import './App.css';
 
 // Protected Route component
@@ -55,10 +57,26 @@ function App() {
                             }
                         />
                         <Route
+                            path="/user-profile"
+                            element={
+                                <ProtectedRoute allowedRole="user">
+                                    <UserProfile />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
                             path="/post-ad"
                             element={
                                 <ProtectedRoute allowedRole="user">
                                     <PostAd />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/compare-cars"
+                            element={
+                                <ProtectedRoute allowedRole="user">
+                                    <CarComparison />
                                 </ProtectedRoute>
                             }
                         />

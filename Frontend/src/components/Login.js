@@ -24,10 +24,10 @@ const Login = () => {
         setLoading(true);
 
         try {
-            console.log('Attempting admin login...');
+            console.log('Attempting login...');
             
-            // Try admin login
-            const response = await fetch('http://localhost:5000/api/admin/login', {
+            // Try admin login first
+            let response = await fetch('http://localhost:5000/api/admin/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -35,11 +35,11 @@ const Login = () => {
                 body: JSON.stringify(formData),
             });
 
-            const data = await response.json();
-            console.log('Login response:', data);
+            let data = await response.json();
+            console.log('Admin login response:', data);
 
             if (data.success) {
-                // Store user data in localStorage
+                // Store admin data in localStorage
                 localStorage.setItem('user', JSON.stringify({
                     ...data.admin,
                     token: data.token
@@ -47,9 +47,35 @@ const Login = () => {
                 
                 // Navigate to admin dashboard
                 navigate('/admin-dashboard');
-            } else {
-                throw new Error(data.message || 'Invalid credentials');
+                return;
             }
+            
+            // If admin login fails, try regular user login
+            console.log('Admin login failed, trying user login...');
+            response = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            data = await response.json();
+            console.log('User login response:', data);
+
+            if (data.success) {
+                // Store user data in localStorage
+                localStorage.setItem('user', JSON.stringify({
+                    ...data.user,
+                    token: data.token
+                }));
+                
+                // Navigate to user dashboard
+                navigate('/user-dashboard');
+                return;
+            }
+            
+            throw new Error(data.message || 'Invalid credentials');
         } catch (err) {
             console.error('Login error:', err);
             setError(err.message || 'Invalid credentials');
