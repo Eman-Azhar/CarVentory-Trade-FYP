@@ -10,19 +10,11 @@ const UserDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedCar, setSelectedCar] = useState(null);
-<<<<<<< HEAD
-<<<<<<< HEAD
     const [searchTerm, setSearchTerm] = useState("");
     const [filter, setFilter] = useState("all");
     const [suggestions, setSuggestions] = useState([]);
     const [activeSuggestion, setActiveSuggestion] = useState(-1);
     const searchInputRef = useRef(null);
-=======
-    const [searchQuery, setSearchQuery] = useState('');
->>>>>>> origin/main
-=======
-    const [searchQuery, setSearchQuery] = useState('');
->>>>>>> origin/main
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -115,7 +107,7 @@ const UserDashboard = () => {
     };
 
     const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
+        setSearchTerm(e.target.value);
     };
 
     // Function to get full image URL
@@ -126,7 +118,7 @@ const UserDashboard = () => {
 
     // Filter car ads based on search query
     const filteredCarAds = carAds.filter(ad => {
-        const searchLower = searchQuery.toLowerCase();
+        const searchLower = searchTerm.toLowerCase();
         return (
             ad.title.toLowerCase().includes(searchLower) ||
             ad.make.toLowerCase().includes(searchLower) ||
@@ -212,18 +204,18 @@ const UserDashboard = () => {
                                     type="text"
                                     className="search-input"
                                     placeholder="Search for make, model, year or price..."
-                                    value={searchQuery}
+                                    value={searchTerm}
                                     onChange={handleSearchChange}
                                 />
                                 <button className="search-button">
                                     <i className="search-icon">🔍</i>
                                 </button>
                             </div>
-                            {searchQuery && (
+                            {searchTerm && (
                                 <div className="search-results-info">
-                                    Found {filteredCarAds.length} results for "{searchQuery}"
+                                    Found {filteredCarAds.length} results for "{searchTerm}"
                                     {filteredCarAds.length === 0 && (
-                                        <button className="clear-search-btn" onClick={() => setSearchQuery('')}>
+                                        <button className="clear-search-btn" onClick={() => setSearchTerm('')}>
                                             Clear Search
                                         </button>
                                     )}
@@ -238,74 +230,10 @@ const UserDashboard = () => {
                             <div className="loading">Loading car advertisements...</div>
                         ) : filteredCarAds.length === 0 ? (
                             <div className="no-ads">
-                                {searchQuery ? `No cars found matching "${searchQuery}"` : "No car advertisements available"}
+                                {searchTerm ? `No cars found matching "${searchTerm}"` : "No car advertisements available"}
                             </div>
                         ) : (
                             <div className="car-ads-grid">
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                {carAds
-                                    .filter(ad => {
-                                        if (!searchTerm) return true;
-                                        const term = searchTerm.toLowerCase();
-                                        if (filter === "all") {
-                                            return (
-                                                ad.title?.toLowerCase().includes(term) ||
-                                                ad.make?.toLowerCase().includes(term) ||
-                                                ad.model?.toLowerCase().includes(term) ||
-                                                String(ad.year).includes(term) ||
-                                                ad.description?.toLowerCase().includes(term) ||
-                                                String(ad.price).includes(term)
-                                            );
-                                        } else if (filter === "make") {
-                                            return ad.make?.toLowerCase().includes(term);
-                                        } else if (filter === "model") {
-                                            return ad.model?.toLowerCase().includes(term);
-                                        } else if (filter === "year") {
-                                            return String(ad.year).includes(term);
-                                        } else if (filter === "price") {
-                                            return String(ad.price).includes(term);
-                                        } else if (filter === "description") {
-                                            return ad.description?.toLowerCase().includes(term);
-                                        }
-                                        return true;
-                                    })
-                                    .map((ad) => {
-                                        // Ensure image URL is absolute if needed
-                                        let imageUrl = '/default-car.jpg';
-                                        if (ad.imageUrls && ad.imageUrls.length > 0) {
-                                            imageUrl = ad.imageUrls[0].startsWith('http')
-                                                ? ad.imageUrls[0]
-                                                : `http://localhost:5000${ad.imageUrls[0]}`;
-                                        }
-                                        return (
-                                            <div key={ad._id} className="car-ad-card">
-                                                <div className="car-ad-image-wrapper">
-                                                    <img 
-                                                        src={imageUrl}
-                                                        alt={`${ad.make} ${ad.model}`}
-                                                        className="car-ad-image"
-                                                        onError={e => { e.target.onerror = null; e.target.src = '/default-car.jpg'; }}
-                                                    />
-                                                </div>
-                                                <div className="car-ad-info">
-                                                    <h3 className="car-ad-title">{ad.title}</h3>
-                                                    <div className="car-ad-price">PKR {ad.price.toLocaleString()}</div>
-                                                    <div className="car-ad-meta">{ad.make} {ad.model} - {ad.year}</div>
-                                                    <div className="car-ad-description">{ad.description}</div>
-                                                    <button 
-                                                        className="view-details-btn"
-                                                        onClick={() => handleViewDetails(ad)}
-                                                    >
-                                                        View Details
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-=======
-=======
->>>>>>> origin/main
                                 {filteredCarAds.map((ad) => {
                                     let imageUrl = '/default-car.jpg';
                                     if (ad.imageUrls && ad.imageUrls.length > 0) {
@@ -332,11 +260,9 @@ const UserDashboard = () => {
                                                     View Details
                                                 </button>
                                             </div>
-
                                         </div>
                                     );
                                 })}
->>>>>>> origin/main
                             </div>
                         )}
                     </div>

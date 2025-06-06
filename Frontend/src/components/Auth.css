@@ -1457,89 +1457,6 @@ button:hover {
     }
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* Search Bar Styles */
-.nav-search-bar {
-    display: flex;
-    align-items: center;
-    margin-left: 1rem;
-    margin-right: 1rem;
-    position: relative;
-}
-
-.nav-search-bar input[type="text"] {
-    padding: 0.4rem 0.8rem;
-    border-radius: 999px 0 0 999px;
-    border: 1px solid #c0a080;
-    outline: none;
-    font-size: 1rem;
-    min-width: 180px;
-    background: rgba(255,255,255,0.9);
-    color: #333;
-    transition: border 0.2s;
-    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
-}
-
-.nav-search-bar input[type="text"]:focus {
-    border: 1.5px solid #8b7355;
-}
-
-.nav-search-bar select {
-    padding: 0.4rem 0.8rem;
-    border-radius: 0 999px 999px 0;
-    border: 1px solid #c0a080;
-    border-left: none;
-    outline: none;
-    font-size: 1rem;
-    background: rgba(255,255,255,0.9);
-    color: #333;
-    transition: border 0.2s;
-    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
-}
-
-.nav-search-suggestions {
-    position: absolute;
-    top: 110%;
-    left: 0;
-    width: 100%;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(44,62,80,0.13);
-    z-index: 10;
-    max-height: 220px;
-    overflow-y: auto;
-    border: 1px solid #c0a080;
-    margin-top: 0.2rem;
-}
-
-.nav-search-suggestion {
-    padding: 0.7rem 1.2rem;
-    cursor: pointer;
-    color: #2c3e50;
-    font-size: 1rem;
-    transition: background 0.15s;
-}
-
-.nav-search-suggestion:hover, .nav-search-suggestion.active {
-    background: #f5eee6;
-    color: #c0a080;
-}
-
-@media (max-width: 768px) {
-    .nav-search-bar {
-        margin: 0.5rem 0;
-        width: 100%;
-    }
-    .nav-search-bar input[type="text"],
-    .nav-search-bar select {
-        min-width: 0;
-        width: 100%;
-        font-size: 0.95rem;
-    }
-=======
-=======
->>>>>>> origin/main
 /* Offer Modal Styles */
 .offer-modal {
     position: fixed;
@@ -2068,8 +1985,4 @@ button:hover {
     color: #721c24;
     background-color: #f8d7da;
     border: 1px solid #f5c6cb;
-<<<<<<< HEAD
->>>>>>> origin/main
-=======
->>>>>>> origin/main
 } 
