@@ -11,11 +11,15 @@ const UserDashboard = () => {
     const [error, setError] = useState('');
     const [selectedCar, setSelectedCar] = useState(null);
 <<<<<<< HEAD
+<<<<<<< HEAD
     const [searchTerm, setSearchTerm] = useState("");
     const [filter, setFilter] = useState("all");
     const [suggestions, setSuggestions] = useState([]);
     const [activeSuggestion, setActiveSuggestion] = useState(-1);
     const searchInputRef = useRef(null);
+=======
+    const [searchQuery, setSearchQuery] = useState('');
+>>>>>>> origin/main
 =======
     const [searchQuery, setSearchQuery] = useState('');
 >>>>>>> origin/main
@@ -239,6 +243,7 @@ const UserDashboard = () => {
                         ) : (
                             <div className="car-ads-grid">
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 {carAds
                                     .filter(ad => {
                                         if (!searchTerm) return true;
@@ -299,6 +304,8 @@ const UserDashboard = () => {
                                         );
                                     })}
 =======
+=======
+>>>>>>> origin/main
                                 {filteredCarAds.map((ad) => {
                                     let imageUrl = '/default-car.jpg';
                                     if (ad.imageUrls && ad.imageUrls.length > 0) {

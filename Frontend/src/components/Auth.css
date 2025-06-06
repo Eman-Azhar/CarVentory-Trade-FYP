@@ -1458,6 +1458,7 @@ button:hover {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Search Bar Styles */
 .nav-search-bar {
     display: flex;
@@ -1537,6 +1538,8 @@ button:hover {
         font-size: 0.95rem;
     }
 =======
+=======
+>>>>>>> origin/main
 /* Offer Modal Styles */
 .offer-modal {
     position: fixed;
@@ -2065,5 +2068,8 @@ button:hover {
     color: #721c24;
     background-color: #f8d7da;
     border: 1px solid #f5c6cb;
+<<<<<<< HEAD
+>>>>>>> origin/main
+=======
 >>>>>>> origin/main
 } 
