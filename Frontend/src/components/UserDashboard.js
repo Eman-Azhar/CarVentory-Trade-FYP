@@ -62,11 +62,39 @@ const UserDashboard = () => {
             return;
         }
         const lower = searchTerm.toLowerCase();
-        const allKeywords = getKeywords(carAds);
-        const filtered = allKeywords.filter(k => k.toLowerCase().includes(lower));
+        let keywords = [];
+        if (filter === "all") {
+            carAds.forEach(ad => {
+                if (ad.title) keywords.push(ad.title);
+                if (ad.make) keywords.push(ad.make);
+                if (ad.model) keywords.push(ad.model);
+                if (ad.year) keywords.push(String(ad.year));
+                if (ad.price) keywords.push(String(ad.price));
+                if (ad.description) {
+                    ad.description.split(/\s+/).forEach(word => {
+                        if (word.length > 2) keywords.push(word);
+                    });
+                }
+            });
+        } else {
+            carAds.forEach(ad => {
+                if (filter === "make" && ad.make) keywords.push(ad.make);
+                if (filter === "model" && ad.model) keywords.push(ad.model);
+                if (filter === "year" && ad.year) keywords.push(String(ad.year));
+                if (filter === "price" && ad.price) keywords.push(String(ad.price));
+                if (filter === "description" && ad.description) {
+                    ad.description.split(/\s+/).forEach(word => {
+                        if (word.length > 2) keywords.push(word);
+                    });
+                }
+            });
+        }
+        // Remove duplicates and filter by search term
+        const uniqueKeywords = Array.from(new Set(keywords));
+        const filtered = uniqueKeywords.filter(k => k && k.toLowerCase().includes(lower));
         setSuggestions(filtered.slice(0, 8));
         setActiveSuggestion(-1);
-    }, [searchTerm, carAds]);
+    }, [searchTerm, carAds, filter]);
 
     const handleSuggestionClick = (suggestion) => {
         setSearchTerm(suggestion);
@@ -139,42 +167,103 @@ const UserDashboard = () => {
                         <div className="nav-logo">
                             <img src="/car-logo.png" alt="CarVentory Trade Logo" className="nav-logo-img" />
                         </div>
-                        <div className="nav-links" style={{ alignItems: 'center' }}>
-                            {/* Search Bar at the start of nav-links */}
-                            <div className="nav-search-bar">
-                                <input
-                                    ref={searchInputRef}
-                                    type="text"
-                                    placeholder="Search cars..."
-                                    value={searchTerm}
-                                    onChange={e => setSearchTerm(e.target.value)}
-                                    onKeyDown={handleInputKeyDown}
-                                    autoComplete="off"
-                                />
-                                <select
-                                    value={filter}
-                                    onChange={e => setFilter(e.target.value)}
+                        <div className="nav-links" style={{ alignItems: 'center', gap: '1.5rem' }}>
+                            {/* Search bar and suggestions dropdown */}
+                            <div style={{ display: 'flex', alignItems: 'center', position: 'relative', minWidth: 320 }}>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        background: '#fff',
+                                        borderRadius: '30px',
+                                        boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                                        minWidth: 260,
+                                        position: 'relative',
+                                        height: 38,
+                                        zIndex: 2
+                                    }}
                                 >
-                                    <option value="all">All</option>
-                                    <option value="make">Make</option>
-                                    <option value="model">Model</option>
-                                    <option value="year">Year</option>
-                                    <option value="price">Price</option>
-                                    <option value="description">Description</option>
-                                </select>
-                                {suggestions.length > 0 && (
-                                    <div className="nav-search-suggestions">
-                                        {suggestions.map((s, idx) => (
-                                            <div
-                                                key={s + idx}
-                                                className={"nav-search-suggestion" + (idx === activeSuggestion ? " active" : "")}
-                                                onMouseDown={() => handleSuggestionClick(s)}
-                                            >
-                                                {s}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
+                                    <input
+                                        ref={searchInputRef}
+                                        type="text"
+                                        placeholder="Search cars..."
+                                        value={searchTerm}
+                                        onChange={e => setSearchTerm(e.target.value)}
+                                        onKeyDown={handleInputKeyDown}
+                                        autoComplete="off"
+                                        style={{
+                                            border: 'none',
+                                            outline: 'none',
+                                            background: 'transparent',
+                                            fontSize: '1rem',
+                                            padding: '8px 12px',
+                                            borderRadius: '30px 0 0 30px',
+                                            minWidth: 120,
+                                            color: '#222',
+                                            height: 34,
+                                        }}
+                                    />
+                                    {/* Vertical separator */}
+                                    <div style={{ width: '1px', height: '24px', background: '#e0e0e0', margin: '0 4px' }} />
+                                    <select
+                                        value={filter}
+                                        onChange={e => setFilter(e.target.value)}
+                                        style={{
+                                            border: 'none',
+                                            outline: 'none',
+                                            background: 'transparent',
+                                            fontSize: '1rem',
+                                            padding: '8px 12px',
+                                            borderRadius: '0 30px 30px 0',
+                                            color: '#222',
+                                            cursor: 'pointer',
+                                            height: 34,
+                                        }}
+                                    >
+                                        <option value="all">All</option>
+                                        <option value="make">Make</option>
+                                        <option value="model">Model</option>
+                                        <option value="year">Year</option>
+                                        <option value="price">Price</option>
+                                        <option value="description">Description</option>
+                                    </select>
+                                    {/* Suggestions dropdown */}
+                                    {suggestions.length > 0 && (
+                                        <div
+                                            style={{
+                                                position: 'absolute',
+                                                left: 0,
+                                                top: '100%',
+                                                width: '100%',
+                                                background: '#fff',
+                                                borderRadius: '0 0 16px 16px',
+                                                boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
+                                                zIndex: 10,
+                                                marginTop: '2px',
+                                                maxHeight: '200px',
+                                                overflowY: 'auto',
+                                                padding: 0
+                                            }}
+                                        >
+                                            {suggestions.map((s, idx) => (
+                                                <div
+                                                    key={s + idx}
+                                                    style={{
+                                                        padding: '10px 18px',
+                                                        cursor: 'pointer',
+                                                        background: idx === activeSuggestion ? '#f0f0f0' : 'transparent',
+                                                        fontSize: '1rem',
+                                                        color: '#222',
+                                                        borderBottom: idx !== suggestions.length - 1 ? '1px solid #f5f5f5' : 'none'
+                                                    }}
+                                                    onMouseDown={() => handleSuggestionClick(s)}
+                                                >
+                                                    {s}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                             {/* End Search Bar */}
                             <button className="nav-link">Home</button>
@@ -197,32 +286,17 @@ const UserDashboard = () => {
                         </div>
                     </div>
 
-                    <div className="search-section">
-                        <div className="search-container">
-                            <div className="search-input-wrapper">
-                                <input
-                                    type="text"
-                                    className="search-input"
-                                    placeholder="Search for make, model, year or price..."
-                                    value={searchTerm}
-                                    onChange={handleSearchChange}
-                                />
-                                <button className="search-button">
-                                    <i className="search-icon">🔍</i>
+                    {/* Show search results info below nav, above car-ads-section */}
+                    {searchTerm && (
+                        <div className="search-results-info">
+                            Found {filteredCarAds.length} results for "{searchTerm}"
+                            {filteredCarAds.length === 0 && (
+                                <button className="clear-search-btn" onClick={() => setSearchTerm('')}>
+                                    Clear Search
                                 </button>
-                            </div>
-                            {searchTerm && (
-                                <div className="search-results-info">
-                                    Found {filteredCarAds.length} results for "{searchTerm}"
-                                    {filteredCarAds.length === 0 && (
-                                        <button className="clear-search-btn" onClick={() => setSearchTerm('')}>
-                                            Clear Search
-                                        </button>
-                                    )}
-                                </div>
                             )}
                         </div>
-                    </div>
+                    )}
 
                     <div className="car-ads-section">
                         {error && <div className="error-message">{error}</div>}
