@@ -23,7 +23,6 @@ const CarComparison = () => {
                 setLoading(false);
             }
         };
-
         fetchCars();
     }, []);
 
@@ -32,33 +31,28 @@ const CarComparison = () => {
         navigate('/login');
     };
 
-    const handleSelectCar1 = (car) => {
-        setSelectedCar1(car);
-    };
-
-    const handleSelectCar2 = (car) => {
-        setSelectedCar2(car);
-    };
-
+    const handleSelectCar1 = (car) => setSelectedCar1(car);
+    const handleSelectCar2 = (car) => setSelectedCar2(car);
     const handleClearComparison = () => {
         setSelectedCar1(null);
         setSelectedCar2(null);
     };
+    const getImageUrl = (url) => url ? (url.startsWith('http') ? url : `http://localhost:5000${url}`) : '/default-car.jpg';
+    const compareValues = (v1, v2, higherIsBetter = true) => v1 === v2 ? null : (higherIsBetter ? (v1 > v2 ? 'car1' : 'car2') : (v1 < v2 ? 'car1' : 'car2'));
 
-    // Function to get full image URL
-    const getImageUrl = (url) => {
-        return `http://localhost:5000${url}`;
-    };
-    
-    // Function to determine which value is better (for numerical comparisons)
-    const compareValues = (value1, value2, higherIsBetter = true) => {
-        if (value1 === value2) return null;
-        
-        if (higherIsBetter) {
-            return value1 > value2 ? 'car1' : 'car2';
-        } else {
-            return value1 < value2 ? 'car1' : 'car2';
+    // Recommendation logic
+    const getRecommendation = () => {
+        if (!selectedCar1 || !selectedCar2) return '';
+        let rec = '';
+        if (selectedCar1.price < selectedCar2.price) rec += `${selectedCar1.make} ${selectedCar1.model} is cheaper. `;
+        else if (selectedCar2.price < selectedCar1.price) rec += `${selectedCar2.make} ${selectedCar2.model} is cheaper. `;
+        if (selectedCar1.year > selectedCar2.year) rec += `${selectedCar1.make} ${selectedCar1.model} is newer. `;
+        else if (selectedCar2.year > selectedCar1.year) rec += `${selectedCar2.make} ${selectedCar2.model} is newer. `;
+        if (selectedCar1.mileage && selectedCar2.mileage) {
+            if (selectedCar1.mileage < selectedCar2.mileage) rec += `${selectedCar1.make} ${selectedCar1.model} has lower mileage.`;
+            else if (selectedCar2.mileage < selectedCar1.mileage) rec += `${selectedCar2.make} ${selectedCar2.model} has lower mileage.`;
         }
+        return rec || 'Both cars are similar in key aspects.';
     };
 
     return (
@@ -66,16 +60,12 @@ const CarComparison = () => {
             {/* Navigation Bar */}
             <nav className="main-nav">
                 <div className="nav-logo">
-                    <img 
-                        src="/car-logo.png" 
-                        alt="CarVentory Trade Logo" 
-                        className="nav-logo-img"
-                    />
+                    <img src="/car-logo.png" alt="CarVentory Trade Logo" className="nav-logo-img" />
                 </div>
                 <div className="nav-links">
                     <button className="nav-link" onClick={() => navigate('/user-dashboard')}>Home</button>
                     <button className="nav-link" onClick={() => navigate('/post-ad')}>Post Ad</button>
-                    <button className="nav-link">About Us</button>
+                    <button className="nav-link" onClick={() => navigate('/about')}>About Us</button>
                     <button className="nav-link">Contact</button>
                     <button className="nav-link logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
@@ -84,64 +74,42 @@ const CarComparison = () => {
             {/* Comparison Section */}
             <div className="comparison-container">
                 <h1>Car Comparison Tool</h1>
-                
                 {error && <div className="error-message">{error}</div>}
-                
                 {loading ? (
                     <div className="loading">Loading cars...</div>
                 ) : (
                     <div className="comparison-content">
                         <div className="car-selection">
-                            <div className="selection-column">
-                                <h3>Select First Car</h3>
-                                <select 
-                                    className="car-select"
-                                    value={selectedCar1 ? selectedCar1._id : ''}
-                                    onChange={(e) => {
-                                        const carId = e.target.value;
-                                        const car = cars.find(c => c._id === carId);
-                                        handleSelectCar1(car || null);
-                                    }}
-                                >
-                                    <option value="">Select a car</option>
-                                    {cars.map(car => (
-                                        <option key={car._id} value={car._id}>
-                                            {car.make} {car.model} {car.year} - PKR {car.price.toLocaleString()}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            
-                            <div className="selection-column">
-                                <h3>Select Second Car</h3>
-                                <select 
-                                    className="car-select"
-                                    value={selectedCar2 ? selectedCar2._id : ''}
-                                    onChange={(e) => {
-                                        const carId = e.target.value;
-                                        const car = cars.find(c => c._id === carId);
-                                        handleSelectCar2(car || null);
-                                    }}
-                                >
-                                    <option value="">Select a car</option>
-                                    {cars.map(car => (
-                                        <option key={car._id} value={car._id}>
-                                            {car.make} {car.model} {car.year} - PKR {car.price.toLocaleString()}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                            {[1, 2].map(idx => (
+                                <div className="selection-column" key={idx}>
+                                    <h3>{idx === 1 ? 'Select First Car' : 'Select Second Car'}</h3>
+                                    <select
+                                        className="car-select"
+                                        value={idx === 1 ? (selectedCar1 ? selectedCar1._id : '') : (selectedCar2 ? selectedCar2._id : '')}
+                                        onChange={e => {
+                                            const carId = e.target.value;
+                                            const car = cars.find(c => c._id === carId);
+                                            idx === 1 ? handleSelectCar1(car || null) : handleSelectCar2(car || null);
+                                        }}
+                                    >
+                                        <option value="">Select a car</option>
+                                        {cars.map(car => (
+                                            <option key={car._id} value={car._id}>
+                                                {car.make} {car.model} {car.year} - PKR {car.price.toLocaleString()}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            ))}
                         </div>
-                        
                         {(selectedCar1 || selectedCar2) && (
-                            <button 
+                            <button
                                 className="clear-comparison-btn"
                                 onClick={handleClearComparison}
                             >
                                 Clear Comparison
                             </button>
                         )}
-                        
                         {!selectedCar1 && !selectedCar2 && (
                             <div className="comparison-instruction">
                                 <p>Select two cars from the dropdown menus above to compare their specifications and features side by side.</p>
@@ -154,7 +122,6 @@ const CarComparison = () => {
                                 </div>
                             </div>
                         )}
-                        
                         {selectedCar1 && selectedCar2 && (
                             <div className="comparison-results">
                                 <div className="comparison-table">
@@ -170,53 +137,79 @@ const CarComparison = () => {
                                             <tr>
                                                 <td>Image</td>
                                                 <td>
-                                                    <img 
-                                                        src={selectedCar1.imageUrls && selectedCar1.imageUrls.length > 0 ? 
-                                                            getImageUrl(selectedCar1.imageUrls[0]) : '/default-car.jpg'} 
-                                                        alt={`${selectedCar1.make} ${selectedCar1.model}`} 
+                                                    <img
+                                                        src={selectedCar1.imageUrls && selectedCar1.imageUrls.length > 0 ? getImageUrl(selectedCar1.imageUrls[0]) : '/default-car.jpg'}
+                                                        alt={`${selectedCar1.make} ${selectedCar1.model}`}
                                                         className="comparison-image"
                                                     />
                                                 </td>
                                                 <td>
-                                                    <img 
-                                                        src={selectedCar2.imageUrls && selectedCar2.imageUrls.length > 0 ? 
-                                                            getImageUrl(selectedCar2.imageUrls[0]) : '/default-car.jpg'} 
-                                                        alt={`${selectedCar2.make} ${selectedCar2.model}`} 
+                                                    <img
+                                                        src={selectedCar2.imageUrls && selectedCar2.imageUrls.length > 0 ? getImageUrl(selectedCar2.imageUrls[0]) : '/default-car.jpg'}
+                                                        alt={`${selectedCar2.make} ${selectedCar2.model}`}
                                                         className="comparison-image"
                                                     />
                                                 </td>
                                             </tr>
-                                            <tr className={selectedCar1.price !== selectedCar2.price ? 'highlight-difference' : ''}>
+                                            <tr>
                                                 <td>Price</td>
-                                                <td className={compareValues(selectedCar1.price, selectedCar2.price, false) === 'car1' ? 'better-value' : 
-                                                    (compareValues(selectedCar1.price, selectedCar2.price, false) === 'car2' ? 'worse-value' : '')}>
-                                                    PKR {selectedCar1.price.toLocaleString()}
-                                                </td>
-                                                <td className={compareValues(selectedCar1.price, selectedCar2.price, false) === 'car2' ? 'better-value' : 
-                                                    (compareValues(selectedCar1.price, selectedCar2.price, false) === 'car1' ? 'worse-value' : '')}>
-                                                    PKR {selectedCar2.price.toLocaleString()}
-                                                </td>
+                                                <td>{selectedCar1.price ? `PKR ${selectedCar1.price.toLocaleString()}` : 'N/A'}</td>
+                                                <td>{selectedCar2.price ? `PKR ${selectedCar2.price.toLocaleString()}` : 'N/A'}</td>
                                             </tr>
-                                            <tr className={selectedCar1.make !== selectedCar2.make ? 'highlight-difference' : ''}>
+                                            <tr>
                                                 <td>Make</td>
                                                 <td>{selectedCar1.make}</td>
                                                 <td>{selectedCar2.make}</td>
                                             </tr>
-                                            <tr className={selectedCar1.model !== selectedCar2.model ? 'highlight-difference' : ''}>
+                                            <tr>
                                                 <td>Model</td>
                                                 <td>{selectedCar1.model}</td>
                                                 <td>{selectedCar2.model}</td>
                                             </tr>
-                                            <tr className={selectedCar1.year !== selectedCar2.year ? 'highlight-difference' : ''}>
+                                            <tr>
                                                 <td>Year</td>
-                                                <td className={compareValues(selectedCar1.year, selectedCar2.year) === 'car1' ? 'better-value' : 
-                                                    (compareValues(selectedCar1.year, selectedCar2.year) === 'car2' ? 'worse-value' : '')}>
-                                                    {selectedCar1.year}
-                                                </td>
-                                                <td className={compareValues(selectedCar1.year, selectedCar2.year) === 'car2' ? 'better-value' : 
-                                                    (compareValues(selectedCar1.year, selectedCar2.year) === 'car1' ? 'worse-value' : '')}>
-                                                    {selectedCar2.year}
-                                                </td>
+                                                <td>{selectedCar1.year}</td>
+                                                <td>{selectedCar2.year}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Mileage</td>
+                                                <td>{selectedCar1.mileage ? `${selectedCar1.mileage} km` : 'N/A'}</td>
+                                                <td>{selectedCar2.mileage ? `${selectedCar2.mileage} km` : 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Transmission</td>
+                                                <td>{selectedCar1.transmission || 'N/A'}</td>
+                                                <td>{selectedCar2.transmission || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Color</td>
+                                                <td>{selectedCar1.color || 'N/A'}</td>
+                                                <td>{selectedCar2.color || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fuel Type</td>
+                                                <td>{selectedCar1.fuelType || 'N/A'}</td>
+                                                <td>{selectedCar2.fuelType || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Engine Type</td>
+                                                <td>{selectedCar1.engineType || 'N/A'}</td>
+                                                <td>{selectedCar2.engineType || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Condition</td>
+                                                <td>{selectedCar1.condition || 'N/A'}</td>
+                                                <td>{selectedCar2.condition || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Seller Name</td>
+                                                <td>{selectedCar1.sellerName || 'N/A'}</td>
+                                                <td>{selectedCar2.sellerName || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Seller Phone</td>
+                                                <td>{selectedCar1.sellerPhone || 'N/A'}</td>
+                                                <td>{selectedCar2.sellerPhone || 'N/A'}</td>
                                             </tr>
                                             <tr>
                                                 <td>Description</td>
@@ -226,25 +219,15 @@ const CarComparison = () => {
                                         </tbody>
                                     </table>
                                 </div>
-                                
                                 <div className="comparison-summary">
-                                    <h3>Summary</h3>
-                                    <p>
-                                        The {selectedCar1.make} {selectedCar1.model} {selectedCar1.year} is priced at PKR {selectedCar1.price.toLocaleString()}, 
-                                        while the {selectedCar2.make} {selectedCar2.model} {selectedCar2.year} is priced at PKR {selectedCar2.price.toLocaleString()}.
-                                        {selectedCar1.price < selectedCar2.price ? 
-                                            ` The ${selectedCar1.make} ${selectedCar1.model} is ${(selectedCar2.price - selectedCar1.price).toLocaleString()} PKR cheaper.` : 
-                                            selectedCar1.price > selectedCar2.price ? 
-                                                ` The ${selectedCar2.make} ${selectedCar2.model} is ${(selectedCar1.price - selectedCar2.price).toLocaleString()} PKR cheaper.` : 
-                                                ' Both cars are priced the same.'}
-                                    </p>
+                                    <h3>Summary & Recommendation</h3>
+                                    <p>{getRecommendation()}</p>
                                 </div>
                             </div>
                         )}
                     </div>
                 )}
             </div>
-
             {/* Footer Section */}
             <footer className="login-footer">
                 <div className="footer-content">
