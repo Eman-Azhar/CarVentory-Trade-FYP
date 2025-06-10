@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import OffersManager from './OffersManager';
 import ImageGallery from './ImageGallery';
+import CarDetails from './CarDetails';
 import './Auth.css';
 
 const UserProfile = () => {
@@ -13,6 +14,7 @@ const UserProfile = () => {
     const [user, setUser] = useState(null);
     const [editingAd, setEditingAd] = useState(null);
     const [activeTab, setActiveTab] = useState('ads');
+    const [viewingAd, setViewingAd] = useState(null);
     const [formData, setFormData] = useState({
         title: '',
         make: '',
@@ -38,11 +40,6 @@ const UserProfile = () => {
                         Authorization: `Bearer ${userData.token}`
                     }
                 });
-                console.log("User Ads Response:", response.data);
-                // Check image structure in the first ad if available
-                if (response.data.length > 0) {
-                    console.log("First ad images:", response.data[0].imageUrls);
-                }
                 setUserAds(response.data);
                 setAdCount(response.data.length);
             } catch (err) {
@@ -100,21 +97,17 @@ const UserProfile = () => {
 
     const handleSubmitEdit = async (e) => {
         e.preventDefault();
-        
         try {
-            const response = await axios.put(`http://localhost:5000/api/cars/${editingAd._id}`, formData, {
+            await axios.put(`http://localhost:5000/api/cars/${editingAd._id}`, formData, {
                 headers: {
                     Authorization: `Bearer ${user.token}`
                 }
             });
-            
-            // Update the ads list with edited ad
             setUserAds(prevAds => 
                 prevAds.map(ad => 
                     ad._id === editingAd._id ? {...ad, ...formData} : ad
                 )
             );
-            
             setEditingAd(null);
         } catch (err) {
             setError('Failed to update advertisement');
@@ -126,17 +119,14 @@ const UserProfile = () => {
         setEditingAd(null);
     };
 
-    // Function to get full image URL
     const getImageUrl = (url) => {
         if (!url) return '/default-car.jpg';
         return url.startsWith('http') ? url : `http://localhost:5000${url}`;
     };
 
     const renderMyAds = () => {
-        if (loading) {
-            return <div className="loading">Loading your advertisements...</div>;
-        }
-        
+        if (loading) return <div className="loading">Loading your advertisements...</div>;
+
         if (userAds.length === 0) {
             return (
                 <div className="no-ads">
@@ -151,114 +141,59 @@ const UserProfile = () => {
                 </div>
             );
         }
-        
+
         return (
             <div className="user-ads-grid">
                 {userAds.map((ad) => (
-                    <div key={ad._id} className="user-ad-card">
+                    <div key={ad._id} className="car-ad-card">
                         {editingAd && editingAd._id === ad._id ? (
                             <div className="edit-ad-form">
                                 <h3>Edit Advertisement</h3>
                                 <form onSubmit={handleSubmitEdit}>
                                     <div className="form-group">
-                                        <label htmlFor="title">Title</label>
-                                        <input
-                                            type="text"
-                                            id="title"
-                                            name="title"
-                                            value={formData.title}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <label>Title</label>
+                                        <input type="text" name="title" value={formData.title} onChange={handleChange} required />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="make">Make</label>
-                                        <input
-                                            type="text"
-                                            id="make"
-                                            name="make"
-                                            value={formData.make}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <label>Make</label>
+                                        <input type="text" name="make" value={formData.make} onChange={handleChange} required />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="model">Model</label>
-                                        <input
-                                            type="text"
-                                            id="model"
-                                            name="model"
-                                            value={formData.model}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <label>Model</label>
+                                        <input type="text" name="model" value={formData.model} onChange={handleChange} required />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="year">Year</label>
-                                        <input
-                                            type="number"
-                                            id="year"
-                                            name="year"
-                                            value={formData.year}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <label>Year</label>
+                                        <input type="number" name="year" value={formData.year} onChange={handleChange} required />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="price">Price (PKR)</label>
-                                        <input
-                                            type="number"
-                                            id="price"
-                                            name="price"
-                                            value={formData.price}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <label>Price (PKR)</label>
+                                        <input type="number" name="price" value={formData.price} onChange={handleChange} required />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="description">Description</label>
-                                        <textarea
-                                            id="description"
-                                            name="description"
-                                            value={formData.description}
-                                            onChange={handleChange}
-                                            required
-                                            rows="4"
-                                            className="form-textarea"
-                                        />
+                                        <label>Description</label>
+                                        <textarea name="description" value={formData.description} onChange={handleChange} required />
                                     </div>
                                     <div className="form-actions">
-                                        <button type="submit" className="save-btn">Save Changes</button>
+                                        <button type="submit" className="save-btn">Save</button>
                                         <button type="button" className="cancel-btn" onClick={handleCancelEdit}>Cancel</button>
                                     </div>
                                 </form>
                             </div>
                         ) : (
                             <>
-                                <div className="car-image-wrapper">
-                                    <ImageGallery 
-                                        images={ad.imageUrls} 
-                                        defaultImage="/default-car.jpg"
-                                    />
+                                <div className="car-ad-image-wrapper">
+                                    <ImageGallery images={ad.imageUrls} defaultImage="/default-car.jpg" />
                                 </div>
-                                <div className="car-details">
-                                    <h3>{ad.title}</h3>
-                                    <p className="car-price">PKR {ad.price.toLocaleString()}</p>
-                                    <p className="car-model">{ad.make} {ad.model} - {ad.year}</p>
-                                    <p className="car-description">{ad.description}</p>
+                                <div className="car-ad-info">
+                                    <h3 className="car-ad-title">{ad.title}</h3>
+                                    <div className="car-ad-price">PKR {ad.price.toLocaleString()}</div>
+                                    <div className="car-ad-meta">{ad.make} {ad.model} - {ad.year}</div>
+                                    <div className="car-ad-description">{ad.description}</div>
                                     <div className="ad-actions">
-                                        <button 
-                                            className="edit-btn"
-                                            onClick={() => handleEditClick(ad)}
-                                        >
-                                            Edit
-                                        </button>
-                                        <button 
-                                            className="delete-btn"
-                                            onClick={() => handleDeleteAd(ad._id)}
-                                        >
-                                            Delete
-                                        </button>
+                                        <button onClick={() => handleEditClick(ad)}>Edit</button>
+                                        <button onClick={() => handleDeleteAd(ad._id)}>Delete</button>
+                                        <button onClick={() => setViewingAd(ad)}>View</button>
                                     </div>
                                 </div>
                             </>
@@ -271,14 +206,9 @@ const UserProfile = () => {
 
     return (
         <div className="luxury-login-container">
-            {/* Navigation Bar */}
             <nav className="main-nav">
                 <div className="nav-logo">
-                    <img 
-                        src="/car-logo.png" 
-                        alt="CarVentory Trade Logo" 
-                        className="nav-logo-img"
-                    />
+                    <img src="/car-logo.png" alt="CarVentory Trade Logo" className="nav-logo-img" />
                 </div>
                 <div className="nav-links">
                     <button className="nav-link" onClick={() => navigate('/user-dashboard')}>Home</button>
@@ -290,59 +220,45 @@ const UserProfile = () => {
                 </div>
             </nav>
 
-            {/* Branding Section */}
             <div className="branding-section">
                 <div className="branding-content">
                     <div className="logo-container">
-                        <img 
-                            src="/car-logo.png" 
-                            alt="CarVentory Trade Logo" 
-                            className="car-logo"
-                        />
+                        <img src="/car-logo.png" alt="CarVentory Trade Logo" className="car-logo" />
                     </div>
                     <h1 className="luxury-logo">CarVentory Trade</h1>
                     <p className="luxury-tagline">Your Profile</p>
                 </div>
             </div>
 
-            {/* User Profile Section */}
             <div className="profile-section">
                 {user && (
                     <div className="profile-info">
                         <h2>Welcome, {user.name}</h2>
                         <p>Email: {user.email}</p>
                         <p>Ad Quota: {adCount}/5 ads posted</p>
-                        {adCount >= 5 && (
-                            <p className="quota-message">You have reached the maximum limit of 5 ads</p>
-                        )}
+                        {adCount >= 5 && <p className="quota-message">You have reached the maximum limit of 5 ads</p>}
                     </div>
                 )}
             </div>
 
-            {/* Profile Tabs */}
             <div className="profile-tabs">
-                <button 
-                    className={`tab-btn ${activeTab === 'ads' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('ads')}
-                >
-                    My Advertisements
-                </button>
-                <button 
-                    className={`tab-btn ${activeTab === 'offers' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('offers')}
-                >
-                    Offers
-                </button>
+                <button className={activeTab === 'ads' ? 'active' : ''} onClick={() => setActiveTab('ads')}>My Advertisements</button>
+                <button className={activeTab === 'offers' ? 'active' : ''} onClick={() => setActiveTab('offers')}>Offers</button>
             </div>
 
-            {/* Tab Content */}
             <div className="tab-content">
                 {error && <div className="error-message">{error}</div>}
-                
                 {activeTab === 'ads' ? (
                     <div className="user-ads-section">
                         <h2>My Advertisements</h2>
                         {renderMyAds()}
+                        {viewingAd && (
+                            <div className="modal-overlay">
+                                <div className="modal-box">
+                                    <CarDetails car={viewingAd} onClose={() => setViewingAd(null)} />
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="user-offers-section">
@@ -351,16 +267,15 @@ const UserProfile = () => {
                 )}
             </div>
 
-            {/* Footer Section */}
             <footer className="login-footer">
                 <div className="footer-content">
-                    <p className="copyright">© 2025 CarVentory</p>
+                    <p>© 2025 CarVentory</p>
                     <div className="footer-links">
-                        <a href="#" className="footer-link">Privacy Policy</a>
-                        <span className="link-separator">|</span>
-                        <a href="#" className="footer-link">About</a>
-                        <span className="link-separator">|</span>
-                        <a href="#" className="footer-link">Contact Us</a>
+                        <a href="#">Privacy Policy</a>
+                        <span>|</span>
+                        <a href="#">About</a>
+                        <span>|</span>
+                        <a href="#">Contact Us</a>
                     </div>
                 </div>
             </footer>
@@ -368,4 +283,4 @@ const UserProfile = () => {
     );
 };
 
-export default UserProfile; 
+export default UserProfile;

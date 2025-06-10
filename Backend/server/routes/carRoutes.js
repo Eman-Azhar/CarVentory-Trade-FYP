@@ -242,5 +242,17 @@ router.delete('/:id', auth, async (req, res) => {
         });
     }
 });
-
+router.get('/user/:userId', auth, async (req, res) => {
+    try {
+        const cars = await Car.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+        res.json(cars);
+    } catch (error) {
+        console.error('Error fetching user-specific ads:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch user-specific ads',
+            error: error.message
+        });
+    }
+});
 module.exports = router; 

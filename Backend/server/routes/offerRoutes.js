@@ -8,19 +8,18 @@ const auth = require('../middleware/auth');
 router.post('/', auth, async (req, res) => {
     try {
         const {
-            carId, buyerId, sellerId, offerAmount, message, 
-            buyerName, buyerEmail, carTitle, carMake, carModel, carYear, carPrice
+            carId, buyerId, sellerId, offerAmount, message,
+            buyerName, buyerEmail, buyerPhone,
+            carTitle, carMake, carModel, carYear, carPrice
         } = req.body;
 
-        // Validate that user can't make an offer on their own car
-        if (req.user._id.toString() === sellerId) {
+        if (req.user._id.toString() === sellerId.toString()) {
             return res.status(400).json({
                 success: false,
                 message: 'You cannot make an offer on your own advertisement'
             });
         }
 
-        // Verify the car exists
         const car = await Car.findById(carId);
         if (!car) {
             return res.status(404).json({
@@ -29,7 +28,6 @@ router.post('/', auth, async (req, res) => {
             });
         }
 
-        // Create the offer
         const newOffer = new Offer({
             carId,
             buyerId,
@@ -38,6 +36,7 @@ router.post('/', auth, async (req, res) => {
             message,
             buyerName,
             buyerEmail,
+            buyerPhone,
             carTitle,
             carMake,
             carModel,
@@ -65,17 +64,18 @@ router.post('/', auth, async (req, res) => {
 
 // Get offers received by a user (seller)
 router.get('/received/:userId', auth, async (req, res) => {
-    try {
-        // Verify user is accessing their own offers
-        if (req.user._id.toString() !== req.params.userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Not authorized to access these offers'
-            });
-        }
+    console.log("🔐 Authenticated User ID:", req.user._id.toString());
+    console.log("📥 Requested Received Offers for:", req.params.userId.toString());
 
+    if (req.user._id.toString() !== req.params.userId.toString()) {
+        return res.status(403).json({
+            success: false,
+            message: 'Not authorized to access these offers'
+        });
+    }
+
+    try {
         const offers = await Offer.find({ sellerId: req.params.userId }).sort({ createdAt: -1 });
-        
         res.json(offers);
     } catch (error) {
         console.error('Error fetching received offers:', error);
@@ -89,17 +89,18 @@ router.get('/received/:userId', auth, async (req, res) => {
 
 // Get offers sent by a user (buyer)
 router.get('/sent/:userId', auth, async (req, res) => {
-    try {
-        // Verify user is accessing their own offers
-        if (req.user._id.toString() !== req.params.userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Not authorized to access these offers'
-            });
-        }
+    console.log("🔐 Authenticated User ID:", req.user._id.toString());
+    console.log("📤 Requested Sent Offers for:", req.params.userId.toString());
 
+    if (req.user._id.toString() !== req.params.userId.toString()) {
+        return res.status(403).json({
+            success: false,
+            message: 'Not authorized to access these offers'
+        });
+    }
+
+    try {
         const offers = await Offer.find({ buyerId: req.params.userId }).sort({ createdAt: -1 });
-        
         res.json(offers);
     } catch (error) {
         console.error('Error fetching sent offers:', error);
@@ -115,7 +116,6 @@ router.get('/sent/:userId', auth, async (req, res) => {
 router.put('/:offerId/accept', auth, async (req, res) => {
     try {
         const offer = await Offer.findById(req.params.offerId);
-        
         if (!offer) {
             return res.status(404).json({
                 success: false,
@@ -123,7 +123,6 @@ router.put('/:offerId/accept', auth, async (req, res) => {
             });
         }
 
-        // Verify the user is the seller
         if (req.user._id.toString() !== offer.sellerId.toString()) {
             return res.status(403).json({
                 success: false,
@@ -131,7 +130,6 @@ router.put('/:offerId/accept', auth, async (req, res) => {
             });
         }
 
-        // Update offer status
         offer.status = 'accepted';
         const updatedOffer = await offer.save();
 
@@ -154,7 +152,6 @@ router.put('/:offerId/accept', auth, async (req, res) => {
 router.put('/:offerId/reject', auth, async (req, res) => {
     try {
         const offer = await Offer.findById(req.params.offerId);
-        
         if (!offer) {
             return res.status(404).json({
                 success: false,
@@ -162,7 +159,6 @@ router.put('/:offerId/reject', auth, async (req, res) => {
             });
         }
 
-        // Verify the user is the seller
         if (req.user._id.toString() !== offer.sellerId.toString()) {
             return res.status(403).json({
                 success: false,
@@ -170,7 +166,6 @@ router.put('/:offerId/reject', auth, async (req, res) => {
             });
         }
 
-        // Update offer status
         offer.status = 'rejected';
         const updatedOffer = await offer.save();
 
@@ -193,7 +188,6 @@ router.put('/:offerId/reject', auth, async (req, res) => {
 router.get('/car/:carId', auth, async (req, res) => {
     try {
         const car = await Car.findById(req.params.carId);
-        
         if (!car) {
             return res.status(404).json({
                 success: false,
@@ -201,7 +195,6 @@ router.get('/car/:carId', auth, async (req, res) => {
             });
         }
 
-        // Verify the user is the car owner
         if (req.user._id.toString() !== car.userId.toString()) {
             return res.status(403).json({
                 success: false,
@@ -210,7 +203,6 @@ router.get('/car/:carId', auth, async (req, res) => {
         }
 
         const offers = await Offer.find({ carId: req.params.carId }).sort({ createdAt: -1 });
-        
         res.json(offers);
     } catch (error) {
         console.error('Error fetching offers for car:', error);
@@ -222,4 +214,4 @@ router.get('/car/:carId', auth, async (req, res) => {
     }
 });
 
-module.exports = router; 
+module.exports = router;
