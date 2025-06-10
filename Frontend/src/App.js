@@ -7,6 +7,7 @@ import UserDashboard from './components/UserDashboard';
 import UserProfile from './components/UserProfile';
 import PostAd from './components/PostAd';
 import CarComparison from './components/CarComparison';
+import AboutUs from './components/AboutUs';
 import './App.css';
 
 // Protected Route component
@@ -81,6 +82,10 @@ function App() {
                                     <CarComparison />
                                 </ProtectedRoute>
                             }
+                        />
+                        <Route
+                            path="/about"
+                            element={<AboutUs />}
                         />
                         <Route path="/" element={<Navigate to="/login" />} />
                     </Routes>
