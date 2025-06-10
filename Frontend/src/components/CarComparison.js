@@ -72,7 +72,7 @@ const CarComparison = () => {
             </nav>
 
             {/* Comparison Section */}
-            <div className="comparison-container">
+            <div className="comparison-container" style={{ marginTop: 0, paddingTop: '90px' }}>
                 <h1>Car Comparison Tool</h1>
                 {error && <div className="error-message">{error}</div>}
                 {loading ? (
@@ -125,97 +125,51 @@ const CarComparison = () => {
                         {selectedCar1 && selectedCar2 && (
                             <div className="comparison-results">
                                 <div className="comparison-table">
-                                    <table>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', color: '#222', background: '#fff' }}>
                                         <thead>
-                                            <tr>
-                                                <th>Feature</th>
-                                                <th>{selectedCar1.make} {selectedCar1.model}</th>
-                                                <th>{selectedCar2.make} {selectedCar2.model}</th>
+                                            <tr style={{ background: '#f5f7fa', color: '#1a237e' }}>
+                                                <th style={{ padding: '12px 8px', fontWeight: 700, fontSize: '1.08rem' }}>Feature</th>
+                                                <th style={{ padding: '12px 8px', fontWeight: 700 }}>{selectedCar1.make} {selectedCar1.model}</th>
+                                                <th style={{ padding: '12px 8px', fontWeight: 700 }}>{selectedCar2.make} {selectedCar2.model}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>Image</td>
-                                                <td>
+                                            {[
+                                                ['Image', (
                                                     <img
                                                         src={selectedCar1.imageUrls && selectedCar1.imageUrls.length > 0 ? getImageUrl(selectedCar1.imageUrls[0]) : '/default-car.jpg'}
                                                         alt={`${selectedCar1.make} ${selectedCar1.model}`}
                                                         className="comparison-image"
+                                                        style={{ width: 110, height: 70, objectFit: 'cover', borderRadius: 10, boxShadow: '0 2px 8px #eee' }}
                                                     />
-                                                </td>
-                                                <td>
+                                                ), (
                                                     <img
                                                         src={selectedCar2.imageUrls && selectedCar2.imageUrls.length > 0 ? getImageUrl(selectedCar2.imageUrls[0]) : '/default-car.jpg'}
                                                         alt={`${selectedCar2.make} ${selectedCar2.model}`}
                                                         className="comparison-image"
+                                                        style={{ width: 110, height: 70, objectFit: 'cover', borderRadius: 10, boxShadow: '0 2px 8px #eee' }}
                                                     />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Price</td>
-                                                <td>{selectedCar1.price ? `PKR ${selectedCar1.price.toLocaleString()}` : 'N/A'}</td>
-                                                <td>{selectedCar2.price ? `PKR ${selectedCar2.price.toLocaleString()}` : 'N/A'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Make</td>
-                                                <td>{selectedCar1.make}</td>
-                                                <td>{selectedCar2.make}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Model</td>
-                                                <td>{selectedCar1.model}</td>
-                                                <td>{selectedCar2.model}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Year</td>
-                                                <td>{selectedCar1.year}</td>
-                                                <td>{selectedCar2.year}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Mileage</td>
-                                                <td>{selectedCar1.mileage ? `${selectedCar1.mileage} km` : 'N/A'}</td>
-                                                <td>{selectedCar2.mileage ? `${selectedCar2.mileage} km` : 'N/A'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Transmission</td>
-                                                <td>{selectedCar1.transmission || 'N/A'}</td>
-                                                <td>{selectedCar2.transmission || 'N/A'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Color</td>
-                                                <td>{selectedCar1.color || 'N/A'}</td>
-                                                <td>{selectedCar2.color || 'N/A'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Fuel Type</td>
-                                                <td>{selectedCar1.fuelType || 'N/A'}</td>
-                                                <td>{selectedCar2.fuelType || 'N/A'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Engine Type</td>
-                                                <td>{selectedCar1.engineType || 'N/A'}</td>
-                                                <td>{selectedCar2.engineType || 'N/A'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Condition</td>
-                                                <td>{selectedCar1.condition || 'N/A'}</td>
-                                                <td>{selectedCar2.condition || 'N/A'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Seller Name</td>
-                                                <td>{selectedCar1.sellerName || 'N/A'}</td>
-                                                <td>{selectedCar2.sellerName || 'N/A'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Seller Phone</td>
-                                                <td>{selectedCar1.sellerPhone || 'N/A'}</td>
-                                                <td>{selectedCar2.sellerPhone || 'N/A'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Description</td>
-                                                <td>{selectedCar1.description}</td>
-                                                <td>{selectedCar2.description}</td>
-                                            </tr>
+                                                )],
+                                                ['Price', selectedCar1.price ? `PKR ${selectedCar1.price.toLocaleString()}` : 'N/A', selectedCar2.price ? `PKR ${selectedCar2.price.toLocaleString()}` : 'N/A'],
+                                                ['Make', selectedCar1.make, selectedCar2.make],
+                                                ['Model', selectedCar1.model, selectedCar2.model],
+                                                ['Year', selectedCar1.year, selectedCar2.year],
+                                                ['Mileage', selectedCar1.mileage ? `${selectedCar1.mileage} km` : 'N/A', selectedCar2.mileage ? `${selectedCar2.mileage} km` : 'N/A'],
+                                                ['Transmission', selectedCar1.transmission || 'N/A', selectedCar2.transmission || 'N/A'],
+                                                ['Color', selectedCar1.color || 'N/A', selectedCar2.color || 'N/A'],
+                                                ['Fuel Type', selectedCar1.fuelType || 'N/A', selectedCar2.fuelType || 'N/A'],
+                                                ['Engine Type', selectedCar1.engineType || 'N/A', selectedCar2.engineType || 'N/A'],
+                                                ['Condition', selectedCar1.condition || 'N/A', selectedCar2.condition || 'N/A'],
+                                                ['Seller Name', selectedCar1.sellerName || 'N/A', selectedCar2.sellerName || 'N/A'],
+                                                ['Seller Phone', selectedCar1.sellerPhone || 'N/A', selectedCar2.sellerPhone || 'N/A'],
+                                                ['Description', selectedCar1.description, selectedCar2.description],
+                                            ].map((row, idx) => (
+                                                <tr key={row[0]} style={{ background: idx % 2 === 0 ? '#fff' : '#f5f7fa' }}>
+                                                    <td style={{ fontWeight: 600, padding: '10px 8px' }}>{row[0]}</td>
+                                                    <td style={{ padding: '10px 8px' }}>{row[1]}</td>
+                                                    <td style={{ padding: '10px 8px' }}>{row[2]}</td>
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>
                                 </div>
