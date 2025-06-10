@@ -30,12 +30,17 @@ const offerSchema = new mongoose.Schema({
         enum: ['pending', 'accepted', 'rejected'],
         default: 'pending'
     },
+
     // Additional details for easy access
     buyerName: {
         type: String,
         required: true
     },
     buyerEmail: {
+        type: String,
+        required: true
+    },
+    buyerPhone: {                        // ✅ Added field
         type: String,
         required: true
     },
@@ -65,4 +70,4 @@ const offerSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Offer', offerSchema); 
+module.exports = mongoose.model('Offer', offerSchema);

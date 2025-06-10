@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import MakeOffer from './MakeOffer';
 import ImageGallery from './ImageGallery';
 import './Auth.css';
+import BookTestDriveModal from './BookTestDriveModal';
 
 const CarDetails = ({ car, onClose }) => {
     const [showOfferForm, setShowOfferForm] = useState(false);
+    const [showTestDriveForm, setShowTestDriveForm] = useState(false);
     const navigate = useNavigate();
 
     // Log image info for debugging
@@ -39,6 +41,23 @@ const CarDetails = ({ car, onClose }) => {
         setShowOfferForm(false);
     };
 
+    const handleBookTestDrive = () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || !user.token) {
+            alert('You must be logged in to book a test drive');
+            return;
+        }
+        if (car.userId === user._id) {
+            alert("You cannot book a test drive for your own advertisement");
+            return;
+        }
+        setShowTestDriveForm(true);
+    };
+
+    const handleCloseTestDriveForm = () => {
+        setShowTestDriveForm(false);
+    };
+
     return (
         <div className="car-details-modal">
             {showOfferForm ? (
@@ -48,6 +67,11 @@ const CarDetails = ({ car, onClose }) => {
                     onOfferSubmitted={() => {
                         // Handle offer submitted
                     }}
+                />
+            ) : showTestDriveForm ? (
+                <BookTestDriveModal 
+                    car={car}
+                    onClose={handleCloseTestDriveForm}
                 />
             ) : (
                 <div className="car-details-content">
@@ -128,7 +152,7 @@ const CarDetails = ({ car, onClose }) => {
                                 <button className="make-offer-btn" onClick={handleMakeOffer}>
                                     Make an Offer
                                 </button>
-                                <button className="make-offer-btn">
+                                <button className="make-offer-btn" onClick={handleBookTestDrive}>
                                     Book Test Drive
                                 </button>
                                 <button className="close-button" onClick={onClose}>

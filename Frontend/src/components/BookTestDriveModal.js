@@ -2,67 +2,42 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './Auth.css';
 
-const MakeOffer = ({ car, onClose, onOfferSubmitted }) => {
+const BookTestDriveModal = ({ car, onClose }) => {
     const user = JSON.parse(localStorage.getItem('user'));
-    const [offerAmount, setOfferAmount] = useState('');
-    const [message, setMessage] = useState('');
-    const [buyerPhone, setBuyerPhone] = useState('');
-    const [buyerName, setBuyerName] = useState(user?.name || '');
+    console.log("Seller email received:", car.sellerEmail);
+    const [form, setForm] = useState({
+        name: user?.name || '',
+        location: '',
+        datetime: '',
+        description: '',
+        email: user?.email || '',
+    });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setSuccess(false);
         setLoading(true);
-
-        if (!user || !user.token) {
-            setError('You must be logged in to make an offer');
-            setLoading(false);
-            return;
-        }
-
         try {
-            if (car.userId === user._id) {
-                setError("You cannot make an offer on your own advertisement");
-                setLoading(false);
-                return;
-            }
-
-            const offerData = {
+            // Placeholder API call - to be implemented in backend
+            await axios.post('http://localhost:5000/api/test-drive-request', {
                 carId: car._id,
-                buyerId: user._id,
-                sellerId: car.userId,
-                offerAmount: parseFloat(offerAmount),
-                message,
-                buyerName,
-                buyerPhone,
-                buyerEmail: user.email,
-                carTitle: car.title,
-                carMake: car.make,
-                carModel: car.model,
-                carYear: car.year,
-                carPrice: car.price,
-                status: 'pending'
-            };
-
-            await axios.post('http://localhost:5000/api/offers', offerData, {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                    'Content-Type': 'application/json'
-                }
+                sellerEmail: car.sellerEmail,
+                ...form,
             });
-
             setSuccess(true);
             setTimeout(() => {
-                if (onOfferSubmitted) onOfferSubmitted();
                 onClose();
             }, 2000);
         } catch (err) {
-            setError(err.response?.data?.message || err.message || 'Failed to submit offer');
-            console.error('Error submitting offer:', err);
+            setError(err.response?.data?.message || err.message || 'Failed to send request');
         } finally {
             setLoading(false);
         }
@@ -71,66 +46,75 @@ const MakeOffer = ({ car, onClose, onOfferSubmitted }) => {
     return (
         <div className="offer-modal">
             <div className="offer-content">
-                <h2>Make an Offer</h2>
+                <h2>Book Test Drive</h2>
                 <div className="car-summary">
                     <h3>{car.title}</h3>
                     <p className="car-info">{car.make} {car.model} - {car.year}</p>
                     <p className="listing-price">Listed Price: PKR {car.price.toLocaleString()}</p>
                 </div>
-
                 {error && <div className="error-message">{error}</div>}
-                {success && <div className="success-message">Your offer has been submitted successfully!</div>}
-
+                {success && <div className="success-message">Your test drive request has been sent!</div>}
                 {!success && (
                     <form onSubmit={handleSubmit} className="offer-form">
                         <div className="form-group">
-                            <label htmlFor="buyerName">Your Name</label>
+                            <label htmlFor="name">Name</label>
                             <input
                                 type="text"
-                                id="buyerName"
-                                value={buyerName}
-                                onChange={(e) => setBuyerName(e.target.value)}
+                                id="name"
+                                name="name"
+                                value={form.name}
+                                onChange={handleChange}
                                 required
                                 placeholder="Enter your name"
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="buyerPhone">Your Phone Number</label>
+                            <label htmlFor="location">Test Drive Location</label>
                             <input
-                                type="tel"
-                                id="buyerPhone"
-                                value={buyerPhone}
-                                onChange={(e) => setBuyerPhone(e.target.value)}
+                                type="text"
+                                id="location"
+                                name="location"
+                                value={form.location}
+                                onChange={handleChange}
                                 required
-                                placeholder="Enter your phone number"
+                                placeholder="Enter location"
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="offerAmount">Your Offer (PKR)</label>
+                            <label htmlFor="datetime">Test Drive Date and Time</label>
                             <input
-                                type="number"
-                                id="offerAmount"
-                                value={offerAmount}
-                                onChange={(e) => setOfferAmount(e.target.value)}
+                                type="datetime-local"
+                                id="datetime"
+                                name="datetime"
+                                value={form.datetime}
+                                onChange={handleChange}
                                 required
-                                min="1"
-                                step="1000"
-                                placeholder="Enter your offer amount"
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="message">Message (Optional)</label>
+                            <label htmlFor="description">Description (Optional)</label>
                             <textarea
-                                id="message"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
+                                id="description"
+                                name="description"
+                                value={form.description}
+                                onChange={handleChange}
                                 rows="3"
-                                placeholder="Add a message to the seller"
+                                placeholder="Add a note for the seller"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="email">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={form.email}
+                                readOnly
                             />
                         </div>
                         <div className="offer-actions" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="red-button"
                                 disabled={loading}
                                 style={{
@@ -145,10 +129,10 @@ const MakeOffer = ({ car, onClose, onOfferSubmitted }) => {
                                     fontSize: '16px'
                                 }}
                             >
-                                {loading ? 'Submitting...' : 'Submit Offer'}
+                                {loading ? 'Sending...' : 'Send Request'}
                             </button>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 className="red-button"
                                 onClick={onClose}
                                 disabled={loading}
@@ -174,4 +158,4 @@ const MakeOffer = ({ car, onClose, onOfferSubmitted }) => {
     );
 };
 
-export default MakeOffer;
+export default BookTestDriveModal; 
