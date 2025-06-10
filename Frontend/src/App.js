@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Auth from './components/Auth';
@@ -33,6 +33,8 @@ const ProtectedRoute = ({ children, allowedRole }) => {
 };
 
 function App() {
+    const [sortOption, setSortOption] = useState("default");
+
     return (
         <AuthProvider>
             <div className="App">

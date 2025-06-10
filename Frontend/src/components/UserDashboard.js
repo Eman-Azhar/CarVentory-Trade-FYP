@@ -11,11 +11,11 @@ const UserDashboard = () => {
     const [error, setError] = useState('');
     const [selectedCar, setSelectedCar] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [filter, setFilter] = useState("all");
     const [suggestions, setSuggestions] = useState([]);
     const [activeSuggestion, setActiveSuggestion] = useState(-1);
     const searchInputRef = useRef(null);
     const navigate = useNavigate();
+    const [sortOption, setSortOption] = useState("default");
 
     useEffect(() => {
         const fetchCarAds = async () => {
@@ -63,38 +63,24 @@ const UserDashboard = () => {
         }
         const lower = searchTerm.toLowerCase();
         let keywords = [];
-        if (filter === "all") {
-            carAds.forEach(ad => {
-                if (ad.title) keywords.push(ad.title);
-                if (ad.make) keywords.push(ad.make);
-                if (ad.model) keywords.push(ad.model);
-                if (ad.year) keywords.push(String(ad.year));
-                if (ad.price) keywords.push(String(ad.price));
-                if (ad.description) {
-                    ad.description.split(/\s+/).forEach(word => {
-                        if (word.length > 2) keywords.push(word);
-                    });
-                }
-            });
-        } else {
-            carAds.forEach(ad => {
-                if (filter === "make" && ad.make) keywords.push(ad.make);
-                if (filter === "model" && ad.model) keywords.push(ad.model);
-                if (filter === "year" && ad.year) keywords.push(String(ad.year));
-                if (filter === "price" && ad.price) keywords.push(String(ad.price));
-                if (filter === "description" && ad.description) {
-                    ad.description.split(/\s+/).forEach(word => {
-                        if (word.length > 2) keywords.push(word);
-                    });
-                }
-            });
-        }
+        carAds.forEach(ad => {
+            if (ad.title) keywords.push(ad.title);
+            if (ad.make) keywords.push(ad.make);
+            if (ad.model) keywords.push(ad.model);
+            if (ad.year) keywords.push(String(ad.year));
+            if (ad.price) keywords.push(String(ad.price));
+            if (ad.description) {
+                ad.description.split(/\s+/).forEach(word => {
+                    if (word.length > 2) keywords.push(word);
+                });
+            }
+        });
         // Remove duplicates and filter by search term
         const uniqueKeywords = Array.from(new Set(keywords));
         const filtered = uniqueKeywords.filter(k => k && k.toLowerCase().includes(lower));
         setSuggestions(filtered.slice(0, 8));
         setActiveSuggestion(-1);
-    }, [searchTerm, carAds, filter]);
+    }, [searchTerm, carAds]);
 
     const handleSuggestionClick = (suggestion) => {
         setSearchTerm(suggestion);
@@ -134,10 +120,6 @@ const UserDashboard = () => {
         navigate('/compare-cars');
     };
 
-    const handleSearchChange = (e) => {
-        setSearchTerm(e.target.value);
-    };
-
     // Function to get full image URL
     const getImageUrl = (url) => {
         if (!url) return '/default-car.jpg';
@@ -145,7 +127,7 @@ const UserDashboard = () => {
     };
 
     // Filter car ads based on search query
-    const filteredCarAds = carAds.filter(ad => {
+    let filteredCarAds = carAds.filter(ad => {
         const searchLower = searchTerm.toLowerCase();
         return (
             ad.title.toLowerCase().includes(searchLower) ||
@@ -156,6 +138,17 @@ const UserDashboard = () => {
             ad.price.toString().includes(searchLower)
         );
     });
+
+    // Sorting logic
+    if (sortOption === "priceLowHigh") {
+        filteredCarAds = filteredCarAds.slice().sort((a, b) => a.price - b.price);
+    } else if (sortOption === "priceHighLow") {
+        filteredCarAds = filteredCarAds.slice().sort((a, b) => b.price - a.price);
+    } else if (sortOption === "newCars") {
+        filteredCarAds = filteredCarAds.slice().sort((a, b) => b.year - a.year);
+    } else if (sortOption === "usedCars") {
+        filteredCarAds = filteredCarAds.filter(ad => ad.description && ad.description.toLowerCase().includes('used car'));
+    }
 
     return (
         <div className="luxury-login-container">
@@ -169,101 +162,57 @@ const UserDashboard = () => {
                         </div>
                         <div className="nav-links" style={{ alignItems: 'center', gap: '1.5rem' }}>
                             {/* Search bar and suggestions dropdown */}
-                            <div style={{ display: 'flex', alignItems: 'center', position: 'relative', minWidth: 320 }}>
-                                <div
+                            <div style={{ display: 'flex', alignItems: 'center', position: 'relative', minWidth: 340, background: 'rgba(255,255,255,0.97)', borderRadius: 32, boxShadow: '0 2px 12px rgba(0,0,0,0.08)', padding: '2px 10px 2px 8px', height: 44 }}>
+                                {/* Search icon */}
+                                <span style={{ color: '#888', fontSize: 20, marginRight: 6, marginLeft: 2, display: 'flex', alignItems: 'center' }}>🔍</span>
+                                <input
+                                    ref={searchInputRef}
+                                    type="text"
+                                    placeholder="Search cars..."
+                                    value={searchTerm}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                    onKeyDown={handleInputKeyDown}
+                                    autoComplete="off"
                                     style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        background: '#fff',
-                                        borderRadius: '30px',
-                                        boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                                        minWidth: 260,
-                                        position: 'relative',
-                                        height: 38,
-                                        zIndex: 2
+                                        border: 'none',
+                                        outline: 'none',
+                                        background: 'transparent',
+                                        fontSize: '1.08rem',
+                                        padding: '8px 8px 8px 0',
+                                        minWidth: 120,
+                                        color: '#222',
+                                        height: 36,
+                                        flex: 1
+                                    }}
+                                />
+                                {/* Sort dropdown (no label) */}
+                                <select
+                                    value={sortOption}
+                                    onChange={e => setSortOption(e.target.value)}
+                                    style={{
+                                        border: 'none',
+                                        outline: 'none',
+                                        background: 'transparent',
+                                        fontSize: '1.05rem',
+                                        color: '#222',
+                                        cursor: 'pointer',
+                                        height: 36,
+                                        borderRadius: 16,
+                                        padding: '6px 10px',
+                                        fontWeight: 500,
+                                        minWidth: 150,
+                                        maxWidth: 200,
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
                                     }}
                                 >
-                                    <input
-                                        ref={searchInputRef}
-                                        type="text"
-                                        placeholder="Search cars..."
-                                        value={searchTerm}
-                                        onChange={e => setSearchTerm(e.target.value)}
-                                        onKeyDown={handleInputKeyDown}
-                                        autoComplete="off"
-                                        style={{
-                                            border: 'none',
-                                            outline: 'none',
-                                            background: 'transparent',
-                                            fontSize: '1rem',
-                                            padding: '8px 12px',
-                                            borderRadius: '30px 0 0 30px',
-                                            minWidth: 120,
-                                            color: '#222',
-                                            height: 34,
-                                        }}
-                                    />
-                                    {/* Vertical separator */}
-                                    <div style={{ width: '1px', height: '24px', background: '#e0e0e0', margin: '0 4px' }} />
-                                    <select
-                                        value={filter}
-                                        onChange={e => setFilter(e.target.value)}
-                                        style={{
-                                            border: 'none',
-                                            outline: 'none',
-                                            background: 'transparent',
-                                            fontSize: '1rem',
-                                            padding: '8px 12px',
-                                            borderRadius: '0 30px 30px 0',
-                                            color: '#222',
-                                            cursor: 'pointer',
-                                            height: 34,
-                                        }}
-                                    >
-                                        <option value="all">All</option>
-                                        <option value="make">Make</option>
-                                        <option value="model">Model</option>
-                                        <option value="year">Year</option>
-                                        <option value="price">Price</option>
-                                        <option value="description">Description</option>
-                                    </select>
-                                    {/* Suggestions dropdown */}
-                                    {suggestions.length > 0 && (
-                                        <div
-                                            style={{
-                                                position: 'absolute',
-                                                left: 0,
-                                                top: '100%',
-                                                width: '100%',
-                                                background: '#fff',
-                                                borderRadius: '0 0 16px 16px',
-                                                boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
-                                                zIndex: 10,
-                                                marginTop: '2px',
-                                                maxHeight: '200px',
-                                                overflowY: 'auto',
-                                                padding: 0
-                                            }}
-                                        >
-                                            {suggestions.map((s, idx) => (
-                                                <div
-                                                    key={s + idx}
-                                                    style={{
-                                                        padding: '10px 18px',
-                                                        cursor: 'pointer',
-                                                        background: idx === activeSuggestion ? '#f0f0f0' : 'transparent',
-                                                        fontSize: '1rem',
-                                                        color: '#222',
-                                                        borderBottom: idx !== suggestions.length - 1 ? '1px solid #f5f5f5' : 'none'
-                                                    }}
-                                                    onMouseDown={() => handleSuggestionClick(s)}
-                                                >
-                                                    {s}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
+                                    <option value="default">All Cars</option>
+                                    <option value="priceLowHigh">Price: Low to High</option>
+                                    <option value="priceHighLow">Price: High to Low</option>
+                                    <option value="newCars">New Cars</option>
+                                    <option value="usedCars">Used Cars</option>
+                                </select>
                             </div>
                             {/* End Search Bar */}
                             <button className="nav-link">Home</button>
@@ -288,15 +237,15 @@ const UserDashboard = () => {
 
                     {/* Show search results info below nav, above car-ads-section */}
                     {searchTerm && (
-                        <div className="search-results-info">
+                                <div className="search-results-info">
                             Found {filteredCarAds.length} results for "{searchTerm}"
-                            {filteredCarAds.length === 0 && (
+                                    {filteredCarAds.length === 0 && (
                                 <button className="clear-search-btn" onClick={() => setSearchTerm('')}>
-                                    Clear Search
-                                </button>
+                                            Clear Search
+                                        </button>
+                                    )}
+                                </div>
                             )}
-                        </div>
-                    )}
 
                     <div className="car-ads-section">
                         {error && <div className="error-message">{error}</div>}
@@ -316,25 +265,25 @@ const UserDashboard = () => {
                                             : `http://localhost:5000${ad.imageUrls[0]}`;
                                     }
                                     return (
-                                        <div key={ad._id} className="car-ad-card">
+                                    <div key={ad._id} className="car-ad-card">
                                             <div className="car-ad-image-wrapper">
                                                 <img
                                                     src={imageUrl}
                                                     alt={`${ad.make} ${ad.model}`}
                                                     className="car-ad-image"
                                                     onError={e => { e.target.onerror = null; e.target.src = '/default-car.jpg'; }}
-                                                />
-                                            </div>
+                                            />
+                                        </div>
                                             <div className="car-ad-info">
                                                 <h3 className="car-ad-title">{ad.title}</h3>
                                                 <div className="car-ad-price">PKR {ad.price.toLocaleString()}</div>
                                                 <div className="car-ad-meta">{ad.make} {ad.model} - {ad.year}</div>
                                                 <div className="car-ad-description">{ad.description}</div>
                                                 <button className="view-details-btn" onClick={() => handleViewDetails(ad)}>
-                                                    View Details
-                                                </button>
-                                            </div>
+                                                View Details
+                                            </button>
                                         </div>
+                                    </div>
                                     );
                                 })}
                             </div>
@@ -359,4 +308,4 @@ const UserDashboard = () => {
     );
 };
 
-export default UserDashboard;
+export default UserDashboard; 
